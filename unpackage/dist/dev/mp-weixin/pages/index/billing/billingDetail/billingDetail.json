@@ -1,0 +1,16 @@
+{
+  "navigationBarTitleText": "消费开单-施工中",
+  "navigationStyle": "custom",
+  "usingComponents": {
+    "nav-header": "/components/nav-header/nav-header",
+    "uni-section": "/uni_modules/uni-section/components/uni-section/uni-section",
+    "header-card": "/components/header-card/header-card",
+    "tag-page": "/components/tag-page/tag-page",
+    "buyed-page": "/components/buyed-page/buyed-page",
+    "section-view": "/components/section-view/section-view",
+    "pay-type-view": "/components/pay-type-view/pay-type-view",
+    "pay-view": "/components/pay-view/pay-view",
+    "modify-view": "/components/modify-view/modify-view",
+    "s-popup": "/components/s-popup/index"
+  }
+}

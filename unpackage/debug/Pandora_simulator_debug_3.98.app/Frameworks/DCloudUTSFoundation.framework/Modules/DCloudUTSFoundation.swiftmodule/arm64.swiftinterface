@@ -1,0 +1,511 @@
+// swift-interface-format-version: 1.0
+// swift-compiler-version: Apple Swift version 5.5.2 (swiftlang-1300.0.47.5 clang-1300.0.29.30)
+// swift-module-flags: -target arm64-apple-ios9.0 -enable-objc-interop -enable-library-evolution -swift-version 5 -enforce-exclusivity=checked -O -module-name DCloudUTSFoundation
+import DCUniBase
+@_exported import DCloudUTSFoundation
+import Foundation
+import Swift
+import UIKit
+import _Concurrency
+@_hasMissingDesignatedInitializers public class console {
+  public static func log(_ items: Any?...)
+  public static func debug(_ items: Any?...)
+  public static func info(_ items: Any?...)
+  public static func error(_ items: Any?...)
+  public static func warn(_ items: Any?...)
+  @objc deinit
+}
+@_hasMissingDesignatedInitializers public class UTSiOS {
+  public class func getCurrentViewController() -> UIKit.UIViewController
+  public class func getKeyWindow() -> UIKit.UIWindow
+  public class func colorWithString(_ value: Swift.String) -> UIKit.UIColor
+  public class func getResourcePath(_ resourceName: Swift.String) -> Swift.String
+  public class func isSimulator() -> Swift.Bool
+  public class func getDeviceId() -> Swift.String
+  public class func getModel() -> Swift.String
+  public class func convertString(_ value: Any) -> Swift.String
+  public class func convertBool(_ value: Any) -> Swift.Bool
+  public class func convertNumber(_ value: Any) -> Foundation.NSNumber
+  public class func convertDouble(_ value: Any) -> Swift.Double
+  public class func convertFloat(_ value: Any) -> Swift.Float
+  public class func convertInt(_ value: Any) -> Swift.Int
+  public class func convertArray(_ value: Any) -> [Any]
+  public class func convertDictionary(_ value: Any) -> [Swift.String : Any]
+  @objc deinit
+}
+@_inheritsConvenienceInitializers @objc(UTSJSONObject) @objcMembers public class UTSJSONObject : ObjectiveC.NSObject {
+  @objc public var __utsJsonObjectMap: [Swift.String : Any]
+  @objc override dynamic public init()
+  @objc deinit
+  public init(_ item: [Swift.String : Any?])
+  @objc public subscript(key: Swift.String) -> Any? {
+    @objc get
+    @objc set
+  }
+  @objc override dynamic public var description: Swift.String {
+    @objc get
+  }
+}
+public typealias Map = Swift.Dictionary
+extension Swift.Dictionary {
+  public var size: Swift.Int {
+    get
+  }
+  public mutating func set(_ key: Key, _ value: Value) -> Swift.Dictionary<Key, Value>
+  public func get(_ key: Key) -> Value?
+  public mutating func clear()
+  public mutating func delete(_ key: Key) -> Swift.Bool
+  public func has(_ key: Key) -> Swift.Bool
+}
+@_inheritsConvenienceInitializers @objc(UTSCallback) @objcMembers open class UTSCallback : ObjectiveC.NSObject {
+  @objc public var wxCallabck: DCloudUTSFoundation.DCUTSBlock?
+  @objc public var callbackId: Swift.Int
+  @objc public var callbackName: Swift.String
+  @objc override dynamic public init()
+  public func callAsFunction(_ args: Any...)
+  @objc deinit
+}
+@_hasMissingDesignatedInitializers public class JSON {
+  public static func parse(_ text: Swift.String) -> Any?
+  public static func stringify(_ value: Any) -> Swift.String?
+  @objc deinit
+}
+@objc @_hasMissingDesignatedInitializers public class UTSRegExp : Foundation.NSRegularExpression {
+  public var lastIndex: Foundation.NSNumber
+  public var matchFlag: Swift.String
+  public init(_ patternStr: Swift.String? = "", _ flag: Swift.String = "i")
+  public func exec(string: Swift.String) -> DCloudUTSFoundation.RegExpExecArray?
+  public func test(_ string: Swift.String) -> Swift.Bool
+  public func replace(_ str: Swift.String, _ replacement: Swift.String) -> Swift.String
+  public func replace(_ str: Swift.String, _ replacer: ((_ match: Swift.String) -> Swift.String)?) -> Swift.String
+  public func split(_ str: Swift.String) -> [Swift.String]
+  public func split(_ str: Swift.String, _ limit: Swift.Int?) -> [Swift.String]
+  public func split(_ str: Swift.String, _ limit: Foundation.NSNumber?) -> [Swift.String]
+  public func search(_ str: Swift.String) -> Foundation.NSNumber
+  public func firstMatch(_ str: Swift.String) -> Swift.String?
+  public func indexOf(_ string: Swift.String) -> Swift.Int
+  @objc deinit
+}
+public typealias RegExpExecArray = Swift.Array<Swift.String>
+extension Swift.Array where Element == Swift.String {
+  public var index: Foundation.NSNumber {
+    get
+    set
+  }
+  public var input: Swift.String {
+    get
+    set
+  }
+}
+infix operator >>> : BitwiseShiftPrecedence
+infix operator >>>= : AssignmentPrecedence
+postfix operator ++
+prefix operator --
+extension CoreGraphics.CGSize {
+  public init(_ width: CoreGraphics.CGFloat, _ height: CoreGraphics.CGFloat)
+  public init(_ width: Swift.Int, _ height: Swift.Int)
+  public init(_ width: Swift.Double, _ height: Swift.Double)
+}
+public func toSliceIndex(_ value: Swift.Int, _ length: Swift.Int) -> Swift.Int
+public func toSliceIndex(_ value: Foundation.NSNumber, _ length: Foundation.NSNumber) -> Foundation.NSNumber
+extension Swift.Int {
+  postfix public static func ++ (item: inout Swift.Int) -> Swift.Int
+  postfix public static func -- (item: inout Swift.Int) -> Swift.Int
+  prefix public static func ++ (item: inout Swift.Int) -> Swift.Int
+  prefix public static func -- (item: inout Swift.Int) -> Swift.Int
+  public static func >>> (l: Swift.Int, r: Swift.Int) -> Swift.Int
+  public static func >>>= (l: inout Swift.Int, r: Swift.Int) -> Swift.Int
+}
+extension Swift.Int32 {
+  public static func >>> (l: Swift.Int32, r: Swift.Int32) -> Swift.Int32
+  public static func >>>= (l: inout Swift.Int32, r: Swift.Int32) -> Swift.Int32
+}
+extension Swift.UInt {
+  public init(item: Foundation.NSNumber)
+}
+extension Swift.Float {
+  postfix public static func ++ (item: inout Swift.Float) -> Swift.Float
+  postfix public static func -- (item: inout Swift.Float) -> Swift.Float
+  prefix public static func ++ (item: inout Swift.Float) -> Swift.Float
+  prefix public static func -- (item: inout Swift.Float) -> Swift.Float
+}
+extension Swift.Double {
+  postfix public static func ++ (item: inout Swift.Double) -> Swift.Double
+  postfix public static func -- (item: inout Swift.Double) -> Swift.Double
+  prefix public static func ++ (item: inout Swift.Double) -> Swift.Double
+  prefix public static func -- (item: inout Swift.Double) -> Swift.Double
+}
+extension Swift.Array where Element == Any {
+  public subscript(key: Foundation.NSNumber) -> Any {
+    get
+    set
+  }
+}
+extension Swift.Array where Element == Any? {
+  public subscript(key: Foundation.NSNumber) -> Any {
+    get
+    set
+  }
+}
+extension Swift.Array where Element == Swift.String {
+  public func join(_ separator: Swift.String = ",") -> Swift.String
+}
+extension Swift.Array where Element : Swift.Equatable {
+  public func includes(_ searchElement: Element) -> Swift.Bool
+  public func includes(_ searchElement: Element, _ fromIndex: Swift.Int = 0) -> Swift.Bool
+  public func includes(_ searchElement: Element, _ fromIndex: Foundation.NSNumber = 0) -> Swift.Bool
+  public func indexOf(_ searchElement: Element) -> Foundation.NSNumber
+  public func indexOf(_ searchElement: Element, _ fromIndex: Swift.Int) -> Swift.Int
+  public func indexOf(_ searchElement: Element, _ fromIndex: Foundation.NSNumber) -> Foundation.NSNumber
+  public func lastIndexOf(_ searchElement: Element) -> Foundation.NSNumber
+  public func lastIndexOf(_ searchElement: Element, _ fromIndex: Swift.Int) -> Swift.Int
+  public func lastIndexOf(_ searchElement: Element, _ fromIndex: Foundation.NSNumber) -> Foundation.NSNumber
+}
+extension Swift.Array {
+  public var length: Swift.Int {
+    get
+    set
+  }
+  public mutating func add(_ value: Element)
+  public subscript(index: Foundation.NSNumber) -> Element {
+    get
+    set
+  }
+  public func concat(_ elements: [Element]...) -> [Element]
+  public mutating func copyWithin(_ target: Swift.Int) -> [Element]
+  public mutating func copyWithin(_ target: Swift.Int, _ start: Swift.Int) -> [Element]
+  public mutating func copyWithin(_ target: Foundation.NSNumber) -> [Element]
+  public mutating func copyWithin(_ target: Foundation.NSNumber, _ start: Foundation.NSNumber) -> [Element]
+  public mutating func copyWithin(_ target: Swift.Int, _ start: Swift.Int = 0, _ end: Swift.Int) -> [Element]
+  public mutating func copyWithin(_ target: Foundation.NSNumber, _ start: Foundation.NSNumber = 0, _ end: Foundation.NSNumber) -> [Element]
+  public func every(_ callback: (_ value: Element) -> Swift.Bool) -> Swift.Bool
+  public func every(_ callback: (_ value: Element, _ index: Swift.Int) -> Swift.Bool) -> Swift.Bool
+  public func every(_ callback: (_ value: Element, _ index: Foundation.NSNumber) -> Swift.Bool) -> Swift.Bool
+  public func every(_ callback: (_ value: Element, _ index: Swift.Int, _ array: [Element]) -> Swift.Bool) -> Swift.Bool
+  public func every(_ callback: (_ value: Element, _ index: Foundation.NSNumber, _ array: [Element]) -> Swift.Bool) -> Swift.Bool
+  public mutating func fill(_ value: Element) -> [Element]
+  public mutating func fill(_ value: Element, _ start: Swift.Int?) -> [Element]
+  public mutating func fill(_ value: Element, _ start: Foundation.NSNumber) -> [Element]
+  public mutating func fill(_ value: Element, _ start: Swift.Int, _ end: Swift.Int) -> [Element]
+  public mutating func fill(_ value: Element, _ start: Foundation.NSNumber, _ end: Foundation.NSNumber) -> [Element]
+  public func filter(_ callback: (_ value: Element) -> Swift.Bool) -> [Element]
+  public func filter(_ callback: (_ value: Element, _ index: Swift.Int) -> Swift.Bool) -> [Element]
+  public func filter(_ callback: (_ value: Element, _ index: Foundation.NSNumber) -> Swift.Bool) -> [Element]
+  public func filter(_ callback: (_ value: Element, _ index: Swift.Int, _ array: [Element]) -> Swift.Bool) -> [Element]
+  public func filter(_ callback: (_ value: Element, _ index: Foundation.NSNumber, _ array: [Element]) -> Swift.Bool) -> [Element]
+  public func find(_ callback: (_ value: Element) -> Swift.Bool) -> Element?
+  public func find(_ callback: (_ value: Element, _ index: Swift.Int) -> Swift.Bool) -> Element?
+  public func find(_ callback: (_ value: Element, _ index: Foundation.NSNumber) -> Swift.Bool) -> Element?
+  public func find(_ callback: (_ value: Element, _ index: Swift.Int, _ array: [Element]) -> Swift.Bool) -> Element?
+  public func find(_ callback: (_ value: Element, _ index: Foundation.NSNumber, _ array: [Element]) -> Swift.Bool) -> Element?
+  public func findIndex(_ callback: (_ value: Element) -> Swift.Bool) -> Swift.Int
+  public func findIndex(_ callback: (_ value: Element) -> Swift.Bool) -> Foundation.NSNumber
+  public func findIndex(_ callback: (_ value: Element, _ index: Swift.Int) -> Swift.Bool) -> Swift.Int
+  public func findIndex(_ callback: (_ value: Element, _ index: Foundation.NSNumber) -> Swift.Bool) -> Foundation.NSNumber
+  public func findIndex(_ callback: (_ value: Element, _ index: Swift.Int, _ array: [Element]) -> Swift.Bool) -> Swift.Int
+  public func findIndex(_ callback: (_ value: Element, _ index: Foundation.NSNumber, _ array: [Element]) -> Swift.Bool) -> Foundation.NSNumber
+  public func flat() -> [Any]
+  public func flat(_ depth: Swift.Int) -> [Any]
+  public func flat(_ depth: Foundation.NSNumber) -> [Any]
+  public func flatMap(callback: (_ value: Element) -> [Any]) -> [Any]
+  public func flatMap(callback: (_ value: Element, _ index: Swift.Int) -> [Any]) -> [Any]
+  public func flatMap(callback: (_ value: Element, _ index: Foundation.NSNumber) -> [Any]) -> [Any]
+  public func flatMap(callback: (_ value: Element, _ index: Swift.Int, _ array: [Element]) -> [Any]) -> [Any]
+  public func flatMap(callback: (_ value: Element, _ index: Foundation.NSNumber, _ array: [Element]) -> [Any]) -> [Any]
+  public func forEach(_ callback: (_ value: Element, _ index: Swift.Int) -> Swift.Void)
+  public func forEach(_ callback: (_ value: Element, _ index: Foundation.NSNumber) -> Swift.Void)
+  public func forEach(_ callback: (_ value: Element, _ index: Swift.Int, _ array: [Element]) -> Swift.Void)
+  public func forEach(_ callback: (_ value: Element, _ index: Foundation.NSNumber, _ array: [Element]) -> Swift.Void)
+  public func map<R>(_ callback: (_ value: Element) -> R) -> [R]
+  public func map<R>(_ callback: (_ value: Element, _ index: Swift.Int) -> R) -> [R]
+  public func map<R>(_ callback: (_ value: Element, _ index: Foundation.NSNumber) -> R) -> [R]
+  public func map<R>(_ callback: (_ value: Element, _ index: Swift.Int, _ array: [Element]) -> R) -> [R]
+  public func map<R>(_ callback: (_ value: Element, _ index: Foundation.NSNumber, _ array: [Element]) -> R) -> [R]
+  public func keys() -> Swift.IndexingIterator<[Swift.Int]>
+  public mutating func pop() -> Element
+  public mutating func push(_ items: Element...) -> Swift.Int
+  public func reduce(_ callback: (_ previousValue: Element, _ currentValue: Element, _ currentIndex: Swift.Int) -> Element) -> Element
+  public func reduce(_ callback: (_ previousValue: Element, _ currentValue: Element, _ currentIndex: Foundation.NSNumber) -> Element) -> Element
+  public func reduce(_ callback: (_ previousValue: Element, _ currentValue: Element, _ currentIndex: Swift.Int, _ array: [Element]) -> Element) -> Element
+  public func reduce(_ callback: (_ previousValue: Element, _ currentValue: Element, _ currentIndex: Foundation.NSNumber, _ array: [Element]) -> Element) -> Element
+  public func reduce(_ callback: (_ previousValue: Element, _ currentValue: Element) -> Element, _ initialValue: Element) -> Element
+  public func reduce(_ callback: (_ previousValue: Element, _ currentValue: Element, _ currentIndex: Swift.Int) -> Element, _ initialValue: Element) -> Element
+  public func reduce(_ callback: (_ previousValue: Element, _ currentValue: Element, _ currentIndex: Foundation.NSNumber) -> Element, _ initialValue: Element) -> Element
+  public func reduce(_ callback: (_ previousValue: Element, _ currentValue: Element, _ currentIndex: Swift.Int, _ array: [Element]) -> Element, _ initialValue: Element) -> Element
+  public func reduce(_ callback: (_ previousValue: Element, _ currentValue: Element, _ currentIndex: Foundation.NSNumber, _ array: [Element]) -> Element, _ initialValue: Element) -> Element
+  public func reduceRight(_ callback: (_ previousValue: Element, _ currentValue: Element, _ currentIndex: Swift.Int) -> Element) throws -> Element?
+  public func reduceRight(_ callback: (_ previousValue: Element, _ currentValue: Element, _ currentIndex: Foundation.NSNumber) -> Element) throws -> Element?
+  public func reduceRight(_ callback: (_ previousValue: Element, _ currentValue: Element, _ currentIndex: Swift.Int, _ array: [Element]) -> Element) -> Element?
+  public func reduceRight(_ callback: (_ previousValue: Element, _ currentValue: Element, _ currentIndex: Foundation.NSNumber, _ array: [Element]) -> Element) -> Element?
+  public func reduceRight(_ callback: (_ previousValue: Element, _ currentValue: Element) -> Element, _ initialValue: Element) -> Element
+  public func reduceRight(_ callback: (_ previousValue: Element, _ currentValue: Element, _ currentIndex: Swift.Int) -> Element, _ initialValue: Element) -> Element
+  public func reduceRight(_ callback: (_ previousValue: Element, _ currentValue: Element, _ currentIndex: Foundation.NSNumber) -> Element, _ initialValue: Element) -> Element
+  public func reduceRight(_ callback: (_ previousValue: Element, _ currentValue: Element, _ currentIndex: Swift.Int, _ array: [Element]) -> Element, _ initialValue: Element) -> Element
+  public func reduceRight(_ callback: (_ previousValue: Element, _ currentValue: Element, _ currentIndex: Foundation.NSNumber, _ array: [Element]) -> Element, _ initialValue: Element) -> Element
+  public func reverse() -> [Element]
+  public mutating func shift() -> Element
+  public func slice() -> Swift.ArraySlice<Element>
+  public func slice(_ start: Swift.Int) -> Swift.ArraySlice<Element>
+  public func slice(_ start: Foundation.NSNumber) -> Swift.ArraySlice<Element>
+  public func slice(_ start: Swift.Int, _ end: Swift.Int) -> Swift.ArraySlice<Element>
+  public func slice(_ start: Foundation.NSNumber, _ end: Foundation.NSNumber) -> Swift.ArraySlice<Element>
+  public func some(_ callback: (_ value: Element) -> Swift.Bool) -> Swift.Bool
+  public func some(_ callback: (_ value: Element, _ index: Swift.Int) -> Swift.Bool) -> Swift.Bool
+  public func some(_ callback: (_ value: Element, _ index: Foundation.NSNumber) -> Swift.Bool) -> Swift.Bool
+  public func some(_ callback: (_ value: Element, _ index: Swift.Int, _ array: [Element]) -> Swift.Bool) -> Swift.Bool
+  public func some(_ callback: (_ value: Element, _ index: Foundation.NSNumber, _ array: [Element]) -> Swift.Bool) -> Swift.Bool
+  public mutating func splice(_ start: Swift.Int) -> [Element]
+  public mutating func splice(_ start: Foundation.NSNumber) -> [Element]
+  public mutating func splice(_ start: Swift.Int, _ deleteCount: Swift.Int) -> [Element]
+  public mutating func splice(_ start: Foundation.NSNumber, _ deleteCount: Foundation.NSNumber) -> [Element]
+  public mutating func splice(_ start: Swift.Int, _ deleteCount: Swift.Int, items: Element...) -> [Element]
+  public mutating func splice(_ start: Foundation.NSNumber, _ deleteCount: Foundation.NSNumber, _ items: Element...) -> [Element]
+  public mutating func unshift(_ items: Element...) -> Swift.Int
+}
+extension Swift.String {
+  public var length: Swift.Int {
+    get
+  }
+  public func at(_ pos: Swift.Int) -> Swift.String?
+  public func at(_ pos: Foundation.NSNumber) -> Swift.String?
+  public func charAt(_ pos: Swift.Int) -> Swift.String
+  public func charAt(_ pos: Foundation.NSNumber) -> Swift.String
+  public func charCodeAt(_ index: Swift.Int) -> Swift.UInt8?
+  public func charCodeAt(_ index: Foundation.NSNumber) -> Swift.UInt8?
+  public func codePointAt(_ pos: Swift.Int)
+  public func concat(_ strings: Swift.String...) -> Swift.String
+  public func endsWith(_ searchString: Swift.String) -> Swift.Bool
+  public func endsWith(_ searchString: Swift.String, _ endPosition: Swift.Int?) -> Swift.Bool
+  public func endsWith(_ searchString: Swift.String, _ endPosition: Foundation.NSNumber?) -> Swift.Bool
+  public func includes(_ searchString: Swift.String) -> Swift.Bool
+  public func includes(_ searchString: Swift.String, _ position: Swift.Int?) -> Swift.Bool
+  public func includes(_ searchString: Swift.String, _ position: Foundation.NSNumber?) -> Swift.Bool
+  public func indexOf(_ searchString: Swift.String) -> Swift.Int
+  public func indexOf(_ searchString: Swift.String, _ position: Swift.Int?) -> Swift.Int
+  public func indexOf(_ searchString: Swift.String, _ position: Foundation.NSNumber?) -> Foundation.NSNumber
+  public func padStart(_ length: Swift.Int, _ fillStr: Swift.String? = nil) -> Swift.String
+  public func padStart(_ length: Foundation.NSNumber, _ fillStr: Swift.String? = nil) -> Swift.String
+  public func padEnd(_ length: Swift.Int, _ fillStr: Swift.String? = nil) -> Swift.String
+  public func padEnd(_ length: Foundation.NSNumber, _ fillStr: Swift.String? = nil) -> Swift.String
+  public func `repeat`(_ count: Swift.Int) -> Swift.String
+  public func `repeat`(_ count: Foundation.NSNumber) -> Swift.String
+  public func slice() -> Swift.String
+  public func slice(_ start: Swift.Int?, _ end: Swift.Int? = nil) -> Swift.String
+  public func slice(_ start: Foundation.NSNumber?, _ end: Foundation.NSNumber? = nil) -> Swift.String
+  public func toLowerCase() -> Swift.String
+  public func toUpperCase() -> Swift.String
+  public func replace(_ searchValue: Swift.String, _ replaceValue: Swift.String) -> Swift.String
+  public func split(_ separator: Swift.String) -> [Swift.String]
+  public func split(_ separator: Swift.String, _ limit: Swift.Int?) -> [Swift.String]
+  public func split(_ separator: Swift.String, _ limit: Foundation.NSNumber?) -> [Swift.String]
+  public func split(_ regex: DCloudUTSFoundation.UTSRegExp) -> [Swift.String]
+  public func split(_ regex: DCloudUTSFoundation.UTSRegExp, _ limit: Swift.Int?) -> [Swift.String]
+  public func split(_ regex: DCloudUTSFoundation.UTSRegExp, _ limit: Foundation.NSNumber?) -> [Swift.String]
+  public func replace(_ regex: DCloudUTSFoundation.UTSRegExp, _ replaceValue: Swift.String) -> Swift.String
+  public func replace(_ regex: DCloudUTSFoundation.UTSRegExp, _ callback: ((_ match: Swift.String) -> Swift.String)?) -> Swift.String
+  public func search(_ regex: DCloudUTSFoundation.UTSRegExp) -> Swift.Int
+  public func search(_ regex: DCloudUTSFoundation.UTSRegExp) -> Foundation.NSNumber
+}
+extension Foundation.NSNumber {
+  convenience public init(_ item: Swift.CChar)
+  convenience public init(_ item: Swift.Int16)
+  convenience public init(_ item: Swift.Int32)
+  convenience public init(_ item: Swift.Int64)
+  convenience public init(_ item: Swift.UInt8)
+  convenience public init(_ item: Swift.UInt16)
+  convenience public init(_ item: Swift.UInt32)
+  convenience public init(_ item: Swift.UInt64)
+  convenience public init(_ item: Swift.Float)
+  convenience public init(_ item: Swift.Double)
+  convenience public init(_ item: Swift.Bool)
+  public static func + (left: Foundation.NSNumber, right: Swift.Int) -> Foundation.NSNumber
+  public static func += (left: inout Foundation.NSNumber, right: Swift.Int) -> Foundation.NSNumber
+  public static func - (left: Foundation.NSNumber, right: Swift.Int) -> Foundation.NSNumber
+  public static func -= (left: inout Foundation.NSNumber, right: Swift.Int) -> Foundation.NSNumber
+  public static func * (left: Foundation.NSNumber, right: Swift.Int) -> Foundation.NSNumber
+  public static func *= (left: inout Foundation.NSNumber, right: Swift.Int) -> Foundation.NSNumber
+  public static func / (left: Foundation.NSNumber, right: Swift.Int) -> Foundation.NSNumber
+  public static func /= (left: inout Foundation.NSNumber, right: Swift.Int) -> Foundation.NSNumber
+  public static func + (left: Foundation.NSNumber, right: Swift.Float) -> Foundation.NSNumber
+  public static func - (left: Foundation.NSNumber, right: Swift.Float) -> Foundation.NSNumber
+  public static func * (left: Foundation.NSNumber, right: Swift.Float) -> Foundation.NSNumber
+  public static func / (left: Foundation.NSNumber, right: Swift.Float) -> Foundation.NSNumber
+  public static func += (left: inout Foundation.NSNumber, right: Swift.Float) -> Foundation.NSNumber
+  public static func -= (left: inout Foundation.NSNumber, right: Swift.Float) -> Foundation.NSNumber
+  public static func *= (left: inout Foundation.NSNumber, right: Swift.Float) -> Foundation.NSNumber
+  public static func /= (left: inout Foundation.NSNumber, right: Swift.Float) -> Foundation.NSNumber
+  public static func + (left: Foundation.NSNumber, right: Swift.Double) -> Foundation.NSNumber
+  public static func - (left: Foundation.NSNumber, right: Swift.Double) -> Foundation.NSNumber
+  public static func * (left: Foundation.NSNumber, right: Swift.Double) -> Foundation.NSNumber
+  public static func / (left: Foundation.NSNumber, right: Swift.Double) -> Foundation.NSNumber
+  public static func += (left: inout Foundation.NSNumber, right: Swift.Double) -> Foundation.NSNumber
+  public static func -= (left: inout Foundation.NSNumber, right: Swift.Double) -> Foundation.NSNumber
+  public static func *= (left: inout Foundation.NSNumber, right: Swift.Double) -> Foundation.NSNumber
+  public static func /= (left: inout Foundation.NSNumber, right: Swift.Double) -> Foundation.NSNumber
+  public static func + (left: Foundation.NSNumber, right: Foundation.NSNumber) -> Foundation.NSNumber
+  public static func - (left: Foundation.NSNumber, right: Foundation.NSNumber) -> Foundation.NSNumber
+  public static func * (left: Foundation.NSNumber, right: Foundation.NSNumber) -> Foundation.NSNumber
+  public static func / (left: Foundation.NSNumber, right: Foundation.NSNumber) -> Foundation.NSNumber
+  public static func += (left: inout Foundation.NSNumber, right: Foundation.NSNumber) -> Foundation.NSNumber
+  public static func -= (left: inout Foundation.NSNumber, right: Foundation.NSNumber) -> Foundation.NSNumber
+  public static func *= (left: inout Foundation.NSNumber, right: Foundation.NSNumber) -> Foundation.NSNumber
+  public static func /= (left: inout Foundation.NSNumber, right: Foundation.NSNumber) -> Foundation.NSNumber
+  public func toFixed(_ fractionDigits: Swift.Int) -> Swift.String
+  public func toFixed(_ fractionDigits: Foundation.NSNumber) -> Swift.String
+  public func toInt() -> Swift.Int
+  public func toFloat() -> Swift.Float
+  public func toDouble() -> Swift.Double
+  postfix public static func ++ (item: inout Foundation.NSNumber) -> Foundation.NSNumber
+  postfix public static func -- (item: inout Foundation.NSNumber) -> Foundation.NSNumber
+  prefix public static func ++ (item: inout Foundation.NSNumber) -> Foundation.NSNumber
+  prefix public static func -- (item: inout Foundation.NSNumber) -> Foundation.NSNumber
+  public static func >>> (l: Foundation.NSNumber, r: Swift.Int) -> Foundation.NSNumber
+  public static func >>>= (l: inout Foundation.NSNumber, r: Swift.Int) -> Foundation.NSNumber
+  public static func > (l: Foundation.NSNumber, r: Any) -> Swift.Bool
+  public static func > (r: Any, l: Foundation.NSNumber) -> Swift.Bool
+  public static func < (l: Foundation.NSNumber, r: Any) -> Swift.Bool
+  public static func < (r: Any, l: Foundation.NSNumber) -> Swift.Bool
+  public static func == (l: Foundation.NSNumber, r: Any) -> Swift.Bool
+  public static func == (r: Any, l: Foundation.NSNumber) -> Swift.Bool
+  public static func >= (l: Foundation.NSNumber, r: Any) -> Swift.Bool
+  public static func >= (r: Any, l: Foundation.NSNumber) -> Swift.Bool
+  public static func <= (l: Foundation.NSNumber, r: Any) -> Swift.Bool
+  public static func <= (r: Any, l: Foundation.NSNumber) -> Swift.Bool
+  public static func % (l: Foundation.NSNumber, r: Swift.Int) -> Foundation.NSNumber
+  public static func % (l: Swift.Int, r: Foundation.NSNumber) -> Foundation.NSNumber
+}
+public typealias UTSSet = Foundation.NSMutableSet
+extension Foundation.NSMutableSet {
+  public var size: Foundation.NSNumber {
+    get
+  }
+  convenience public init(_ item: [Any])
+  public func delete(_ value: Foundation.NSMutableSet.Element)
+  public func clear()
+  public func has(_ value: Any) -> Swift.Bool
+  public func forEach(_ callback: (_ value: Any, _ key: Any, _ set: Foundation.NSMutableSet) -> Swift.Void)
+  public func forEach(_ callback: (_ value: Any) -> Swift.Void)
+}
+extension Foundation.Date {
+  public var calendar: Foundation.Calendar {
+    get
+  }
+  public init(_ params: Any...)
+  public mutating func mutiParmas(year: Swift.Int, month: Swift.Int, day: Swift.Int? = 1, hour: Swift.Int? = 0, minute: Swift.Int? = 0, second: Swift.Int? = 0, milliseconds: Swift.Int? = 0)
+  public mutating func dateStringParse(string: Swift.String)
+  public mutating func unixTimestamp(unixTimestamp: Swift.Int)
+  public static func now() -> Foundation.NSNumber
+  public func getDate() -> Foundation.NSNumber
+  public mutating func setDate(_ newDay: Swift.Int)
+  public mutating func setDate(_ newDay: Foundation.NSNumber)
+  public func getDay() -> Foundation.NSNumber
+  public mutating func setDay(_ weekday: Swift.Int)
+  public mutating func setDay(_ weekday: Foundation.NSNumber)
+  public func getFullYear() -> Foundation.NSNumber
+  public mutating func setFullYear(_ year: Swift.Int)
+  public mutating func setFullYear(_ year: Foundation.NSNumber)
+  public func getHours() -> Foundation.NSNumber
+  public mutating func setHours(_ hour: Swift.Int)
+  public mutating func setHours(_ hour: Foundation.NSNumber)
+  public func getMilliseconds() -> Foundation.NSNumber
+  public mutating func setMilliseconds(_ milliseconds: Swift.Int)
+  public mutating func setMilliseconds(_ milliseconds: Foundation.NSNumber)
+  public func getMinutes() -> Foundation.NSNumber
+  public mutating func setMinutes(_ minutes: Swift.Int)
+  public mutating func setMinutes(_ minutes: Foundation.NSNumber)
+  public func getMonth() -> Foundation.NSNumber
+  public mutating func setMonth(_ month: Swift.Int)
+  public mutating func setMonth(_ month: Foundation.NSNumber)
+  public func getSeconds() -> Foundation.NSNumber
+  public mutating func setSeconds(_ seconds: Swift.Int)
+  public mutating func setSeconds(_ seconds: Foundation.NSNumber)
+  public func getTime() -> Foundation.NSNumber
+  public mutating func setTime(_ timeInterval: Swift.Int)
+  public mutating func setTime(_ timeInterval: Foundation.NSNumber)
+  public func dateTimeString() -> Swift.String
+  public var utsDateDescription: Swift.String {
+    get
+  }
+}
+public func UTSTrycatch(_ task: () throws -> Swift.Void, _ cb: (DCloudUTSFoundation.UTSError) -> Swift.Void)
+public typealias UTSError = Foundation.NSError
+extension Foundation.NSError {
+  public var message: Swift.String {
+    get
+    set
+  }
+  public var name: Swift.String {
+    get
+  }
+  public var stack: Swift.String {
+    get
+  }
+  convenience public init(_ message: Swift.String? = nil)
+  convenience public init(_ error: Swift.Error)
+  public func toString() -> Swift.String
+}
+@_hasMissingDesignatedInitializers public class Math {
+  public static var E: Foundation.NSNumber {
+    get
+  }
+  public static var LN10: Foundation.NSNumber {
+    get
+  }
+  public static var LN2: Foundation.NSNumber {
+    get
+  }
+  public static var LOG10E: Foundation.NSNumber {
+    get
+  }
+  public static var LOG2E: Foundation.NSNumber {
+    get
+  }
+  public static var PI: Foundation.NSNumber {
+    get
+  }
+  public static var SQRT1_2: Foundation.NSNumber {
+    get
+  }
+  public static var SQRT2: Foundation.NSNumber {
+    get
+  }
+  public static func abs(_ x: Foundation.NSNumber) -> Foundation.NSNumber
+  public static func acos(_ x: Foundation.NSNumber) -> Foundation.NSNumber
+  public static func acosh(_ x: Foundation.NSNumber) -> Foundation.NSNumber
+  public static func asin(_ x: Foundation.NSNumber) -> Foundation.NSNumber
+  public static func asinh(_ x: Foundation.NSNumber) -> Foundation.NSNumber
+  public static func atan(_ x: Foundation.NSNumber) -> Foundation.NSNumber
+  public static func atan2(_ x: Foundation.NSNumber, _ y: Foundation.NSNumber) -> Foundation.NSNumber
+  public static func atanh(_ x: Foundation.NSNumber) -> Foundation.NSNumber
+  public static func cbrt(_ x: Foundation.NSNumber) -> Foundation.NSNumber
+  public static func ceil(_ x: Foundation.NSNumber) -> Foundation.NSNumber
+  public static func cos(_ x: Foundation.NSNumber) -> Foundation.NSNumber
+  public static func cosh(_ x: Foundation.NSNumber) -> Foundation.NSNumber
+  public static func sin(_ x: Foundation.NSNumber) -> Foundation.NSNumber
+  public static func sinh(_ x: Foundation.NSNumber) -> Foundation.NSNumber
+  public static func tan(_ x: Foundation.NSNumber) -> Foundation.NSNumber
+  public static func tanh(_ x: Foundation.NSNumber) -> Foundation.NSNumber
+  public static func exp(_ x: Foundation.NSNumber) -> Foundation.NSNumber
+  public static func expm1(_ x: Foundation.NSNumber) -> Foundation.NSNumber
+  public static func floor(_ x: Foundation.NSNumber) -> Foundation.NSNumber
+  public static func hypot(_ numbers: Foundation.NSNumber...) -> Foundation.NSNumber
+  public static func max(_ x: Foundation.NSNumber...) -> Foundation.NSNumber
+  public static func min(_ x: Foundation.NSNumber...) -> Foundation.NSNumber
+  public static func log(_ x: Foundation.NSNumber) -> Foundation.NSNumber
+  public static func log10(_ x: Foundation.NSNumber) -> Foundation.NSNumber
+  public static func log1p(_ x: Foundation.NSNumber) -> Foundation.NSNumber
+  public static func log2(_ x: Foundation.NSNumber) -> Foundation.NSNumber
+  public static func pow(_ x: Foundation.NSNumber, _ y: Foundation.NSNumber) -> Foundation.NSNumber
+  public static func sqrt(_ x: Foundation.NSNumber) -> Foundation.NSNumber
+  public static func random() -> Foundation.NSNumber
+  public static func round(_ x: Foundation.NSNumber) -> Foundation.NSNumber
+  public static func sign(_ x: Foundation.NSNumber) -> Foundation.NSNumber
+  public static func trunc(_ x: Foundation.NSNumber) -> Foundation.NSNumber
+  public static func imul(_ x: Foundation.NSNumber, _ y: Foundation.NSNumber) -> Foundation.NSNumber
+  public static func clz32(_ x: Any? = nil) -> Foundation.NSNumber
+  @objc deinit
+}
+public func setTimeout(_ task: @escaping () -> Swift.Void, _ delay: Swift.Int = 0) -> Foundation.NSNumber
+public func clearTimeout(_ timeoutID: Foundation.NSNumber)
+public func setInterval(_ task: @escaping () -> Swift.Void, _ delay: Swift.Int = 0) -> Foundation.NSNumber
+public func clearInterval(_ timeoutID: Foundation.NSNumber)

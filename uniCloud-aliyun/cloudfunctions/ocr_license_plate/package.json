@@ -1,0 +1,7 @@
+{
+  "name": "ocr_license_plate",
+  "dependencies": {},
+  "extensions": {
+    "uni-cloud-jql": {}
+  }
+}

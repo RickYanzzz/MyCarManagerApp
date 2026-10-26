@@ -1,0 +1,1 @@
+<view data-event-opts="{{[['tap',[['clickToDetail',['$0'],['data']]]]]}}" class="module" bindtap="__e"><view><text class="{{['iconfont','my-icon',data.icon]}}"></text></view><view class="title"><text>{{data.text}}</text></view></view>

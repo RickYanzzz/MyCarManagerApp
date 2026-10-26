@@ -1,0 +1,30 @@
+{
+  "pages": [
+    "pages/index/index",
+    "pages/login/login",
+    "pages/home/home",
+    "pages/inventory/inventory",
+    "pages/forms/forms",
+    "pages/more/more",
+    "pages/remand/remand",
+    "pages/index/billing/billingDetail/billingDetail",
+    "pages/index/billing/billingDetail/ChoseCard",
+    "pages/index/billing/addConsumePro/addConsumePro",
+    "pages/index/billing/PayController/PayController",
+    "pages/index/orderList/orderList",
+    "pages/car_info/add",
+    "pages/car_info/edit",
+    "pages/car_info/list",
+    "pages/car_info/detail",
+    "uni_modules/uni-upgrade-center-app/pages/upgrade-popup"
+  ],
+  "subPackages": [],
+  "window": {
+    "navigationBarTextStyle": "black",
+    "navigationBarTitleText": "uni-app",
+    "navigationBarBackgroundColor": "#F8F8F8",
+    "backgroundColor": "#F8F8F8"
+  },
+  "tabBar": {},
+  "usingComponents": {}
+}

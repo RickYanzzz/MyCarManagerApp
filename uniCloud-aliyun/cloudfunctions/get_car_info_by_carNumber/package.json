@@ -1,0 +1,7 @@
+{
+  "name": "get_car_info_by_carNumber",
+  "dependencies": {},
+  "extensions": {
+    "uni-cloud-jql": {}
+  }
+}

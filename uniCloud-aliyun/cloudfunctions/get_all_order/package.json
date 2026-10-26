@@ -1,0 +1,7 @@
+{
+  "name": "get_all_order",
+  "dependencies": {},
+  "extensions": {
+    "uni-cloud-jql": {}
+  }
+}

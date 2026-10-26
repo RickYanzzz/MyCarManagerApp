@@ -1,0 +1,16 @@
+{
+  "navigationStyle": "custom",
+  "enablePullDownRefresh": true,
+  "usingComponents": {
+    "nav-header": "/components/nav-header/nav-header",
+    "uni-grid": "/uni_modules/uni-grid/components/uni-grid/uni-grid",
+    "uni-grid-item": "/uni_modules/uni-grid/components/uni-grid-item/uni-grid-item",
+    "custom-input": "/components/custom-input/custom-input",
+    "pro-card": "/components/pro-card/pro-card",
+    "only-char": "/components/only-char/only-char",
+    "char-number": "/components/char-number/char-number",
+    "uni-popup": "/uni_modules/uni-popup/components/uni-popup/uni-popup",
+    "uni-popup-dialog": "/uni_modules/uni-popup/components/uni-popup-dialog/uni-popup-dialog",
+    "uni-popup-message": "/uni_modules/uni-popup/components/uni-popup-message/uni-popup-message"
+  }
+}

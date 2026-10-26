@@ -1,0 +1,7 @@
+{
+  "name": "get_pay_info",
+  "dependencies": {},
+  "extensions": {
+    "uni-cloud-jql": {}
+  }
+}

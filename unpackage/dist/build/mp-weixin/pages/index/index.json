@@ -1,0 +1,10 @@
+{
+  "navigationBarTitleText": "首页",
+  "navigationStyle": "custom",
+  "navigationBarBackgroundColor": "#ffffff",
+  "usingComponents": {
+    "nav-header": "/components/nav-header/nav-header",
+    "uni-section": "/uni_modules/uni-section/components/uni-section/uni-section",
+    "home-item": "/components/home-item/home-item"
+  }
+}

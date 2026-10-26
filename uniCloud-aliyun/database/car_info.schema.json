@@ -1,0 +1,80 @@
+{
+	"bsonType": "object",
+	"required": [],
+	"permission": {
+		"read": true,
+		"create": true,
+		"update": true,
+		"delete": true
+	},
+	"properties": {
+		"_id": {
+			"description": "ID，系统自动生成"
+		},
+		"userId": {
+			"title": "用户ID",
+			"foreignKey": "user._id",
+			"bsonType": "string",
+			"description": "用户ID"
+		},
+		"enterpriseId": {
+			"title": "企业ID",
+			"foreignKey": "enterprise._id",
+			"bsonType": "string",
+			"description": "企业ID"
+		},
+		"carNumber": {
+			"title": "车牌号",
+			"bsonType": "string",
+			"description": "车牌号"
+		},
+		"owner": {
+			"title": "车主姓名",
+			"bsonType": "string",
+			"description": "车主姓名"
+		},
+		"ownerphone": {
+			"title": "联系方式",
+			"bsonType": "string",
+			"description": "联系方式"
+		},
+		"carType": {
+			"title": "车类型",
+			"bsonType": "string",
+			"description": "车类型；0五座，1SUV，2其他"
+		},
+		"brand": {
+			"title": "车辆品牌",
+			"bsonType": "string",
+			"description": "车辆品牌"
+		},
+		"engineNumber": {
+			"title": "发动机号",
+			"bsonType": "string",
+			"description": "发动机号"
+		},
+		"frame": {
+			"title": "车架号",
+			"bsonType": "string",
+			"description": "车架号"
+		},
+		"insure": {
+			"title": "保险到期",
+			"bsonType": "timestamp",
+			"description": "保险到期"
+		},
+		"other": {
+			"title": "其他说明",
+			"bsonType": "string",
+			"description": "其他说明"
+		},
+		"type": {
+			"title": "车牌输入类型",
+			"bsonType": "int",
+			"description": "车牌类型",
+			"componentForEdit":{
+				"name": "text-area"
+			}
+		}
+	}
+}

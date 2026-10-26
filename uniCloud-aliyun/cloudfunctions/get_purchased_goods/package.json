@@ -1,0 +1,7 @@
+{
+  "name": "get_unpurchased_goods",
+  "dependencies": {},
+  "extensions": {
+    "uni-cloud-jql": {}
+  }
+}

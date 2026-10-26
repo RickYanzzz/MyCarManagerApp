@@ -1,0 +1,11 @@
+{
+  "navigationBarTitleText": "临时订单",
+  "enablePullDownRefresh": false,
+  "navigationStyle": "custom",
+  "usingComponents": {
+    "nav-header": "/components/nav-header/nav-header",
+    "uni-section": "/uni_modules/uni-section/components/uni-section/uni-section",
+    "uni-list": "/uni_modules/uni-list/components/uni-list/uni-list",
+    "order-item": "/components/order-item/order-item"
+  }
+}

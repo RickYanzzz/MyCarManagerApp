@@ -1,0 +1,76 @@
+@charset "UTF-8";
+/* 水平间距 */
+/* 水平间距 */
+/* 颜色变量 */
+/* 行为相关颜色 */
+/* 文字基本颜色 */
+/* 背景颜色 */
+/* 边框颜色 */
+/* 尺寸变量 */
+/* 文字尺寸 */
+/* 图片尺寸 */
+/* Border Radius */
+/* 水平间距 */
+/* 垂直间距 */
+/* 透明度 */
+/* 文章场景相关 */
+.select_tab {
+  margin-top: 20px;
+  display: flex;
+  background: #fff;
+  padding-top: 15px;
+  margin-left: 15px;
+  margin-right: 15px;
+  box-sizing: border-box;
+  border-bottom: 2px #f8f8f8 solid;
+}
+.select_tab .select_sub_tab {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  text-align: center;
+  flex: 1;
+}
+.select_tab .select_sub_tab .tab_line {
+  margin-top: 10px;
+  background-color: #6EA0F7;
+  height: 2px;
+  text-align: center;
+}
+.add {
+  font-size: 30px;
+}
+.m-button {
+  background-color: #6EA0F7;
+  margin-left: 15px;
+  margin-right: 15px;
+  margin-top: 30px;
+  margin-bottom: 30px;
+}
+.popup {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.my_popup {
+  width: 260px;
+  height: 350px;
+  background: white;
+  margin: 0 auto;
+}
+.scoll-bg {
+  background: #fff;
+  margin-left: 15px;
+  margin-right: 15px;
+  height: 100px;
+}
+uni-swiper {
+  height: 100px;
+}
+.own-pay-view {
+  text-align: right;
+  padding: 0 20px;
+  padding-top: 30px;
+  color: #999;
+}
+

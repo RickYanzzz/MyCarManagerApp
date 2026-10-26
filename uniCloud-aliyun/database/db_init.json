@@ -1,0 +1,63 @@
+{
+  "enterprise": {
+    "data": [
+      {
+        "_id": "ent_demo_0001",
+        "name": "示范汽车服务中心",
+        "address": "请在管理后台修改为真实地址",
+        "receipt": "示范汽车服务中心",
+        "phone": "13800000000"
+      }
+    ]
+  },
+  "user": {
+    "data": [
+      {
+        "_id": "user_demo_0001",
+        "username": "13800000000",
+        "password": "123456",
+        "realName": "管理员",
+        "phoneNumber": "13800000000",
+        "enterpriseId": "ent_demo_0001",
+        "status": true
+      }
+    ]
+  },
+  "goods": {
+    "data": [
+      {
+        "name": "标准洗车",
+        "fee": 30,
+        "hotStatus": true,
+        "enterpriseId": "ent_demo_0001"
+      },
+      {
+        "name": "更换机油",
+        "fee": 180,
+        "hotStatus": true,
+        "enterpriseId": "ent_demo_0001"
+      },
+      {
+        "name": "四轮定位",
+        "fee": 120,
+        "hotStatus": false,
+        "enterpriseId": "ent_demo_0001"
+      }
+    ]
+  },
+  "car_info": {
+    "data": []
+  },
+  "order": {
+    "data": []
+  },
+  "pay_infos": {
+    "data": []
+  },
+  "purchased_goods": {
+    "data": []
+  },
+  "todays_income": {
+    "data": []
+  }
+} 

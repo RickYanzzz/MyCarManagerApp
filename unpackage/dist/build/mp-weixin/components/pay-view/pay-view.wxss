@@ -1,0 +1,1 @@
+.payTypeView{width:260px;height:280px;border-radius:10px}.payTypeView .header{height:40px;background:#6ea0f7;color:#fff;text-align:center;line-height:40px}.payTypeView .formView{padding:10px}.payTypeView .button{background:#6ea0f7}

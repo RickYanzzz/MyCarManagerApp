@@ -1,0 +1,1 @@
+<view class="tagPage"><block wx:for="{{hotGoods}}" wx:for-item="item" wx:for-index="__i0__"><uni-tag class="mytag" vue-id="{{'d3f8fd7c-1-'+__i0__}}" text="{{item.name}}" data-event-opts="{{[['^click',[['clickItem',['$0'],[[['hotGoods','',__i0__]]]]]]]}}" bind:click="__e" bind:__l="__l"></uni-tag></block></view>

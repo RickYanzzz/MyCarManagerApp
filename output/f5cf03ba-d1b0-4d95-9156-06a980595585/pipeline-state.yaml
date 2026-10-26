@@ -1,0 +1,59 @@
+schema_version: 1
+request_id: f5cf03ba-d1b0-4d95-9156-06a980595585
+created_at: 2026-10-13T00:00:00+08:00
+updated_at: 2026-10-13T00:10:00+08:00
+
+entry_type: full_pipeline
+stage_chain: [1, 2, 3]
+
+output_docx_path: /Users/wangjie/Documents/修车门店管理系统/产品文档/智慧车店-产品需求文档PRD.docx
+output_docx_user_specified: true
+
+current_stage: 2
+
+stages:
+  stage_0:
+    status: completed
+    completed_at: 2026-10-13T00:00:00+08:00
+    decision: full_pipeline
+
+  stage_1:
+    status: completed
+    started_at: 2026-10-13T00:05:00+08:00
+    completed_at: 2026-10-13T00:10:00+08:00
+    output_path: "stage1/final_draft.md"
+    genre: general
+    expert_used: general-writer
+    route_tag: general_writing
+    critic_decision: null
+
+  stage_2:
+    status: pending
+    started_at: null
+    completed_at: null
+    route: null
+    html_sub: null
+    output_path: null
+    output_format: null
+    skills_invoked: []
+    design_tokens_path: null
+    fallback: false
+    fallback_reason: null
+
+  stage_3:
+    status: pending
+    started_at: null
+    completed_at: null
+    executor: null
+    input_format: null
+    output_path: null
+    skill_used: []
+    present_files_opened: false
+    fallback: false
+    fallback_reason: null
+
+consistency_check:
+  output_files_exist: null
+  stage_chain_complete: null
+  last_checked_at: null
+  errors: []

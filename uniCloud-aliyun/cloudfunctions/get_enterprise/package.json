@@ -1,0 +1,7 @@
+{
+  "name": "get_enterprise",
+  "dependencies": {},
+  "extensions": {
+    "uni-cloud-jql": {}
+  }
+}

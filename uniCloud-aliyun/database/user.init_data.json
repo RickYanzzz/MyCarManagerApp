@@ -1,0 +1,11 @@
+[
+  {
+    "_id": "user_demo_0001",
+    "username": "13800000000",
+    "password": "123456",
+    "realName": "管理员",
+    "phoneNumber": "13800000000",
+    "enterpriseId": "ent_demo_0001",
+    "status": true
+  }
+]

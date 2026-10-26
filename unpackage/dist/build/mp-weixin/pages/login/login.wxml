@@ -1,0 +1,1 @@
+<view><login-password vue-id="35a7246c-1" themeColor="{{themeColor}}" logoUrl="{{logoUrl}}" data-event-opts="{{[['^loginFun',[['loginFun']]]]}}" bind:loginFun="__e" bind:__l="__l"></login-password></view>

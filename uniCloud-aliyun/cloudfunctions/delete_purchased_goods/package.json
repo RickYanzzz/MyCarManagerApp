@@ -1,0 +1,7 @@
+{
+  "name": "delete_purchased_goods",
+  "dependencies": {},
+  "extensions": {
+    "uni-cloud-jql": {}
+  }
+}

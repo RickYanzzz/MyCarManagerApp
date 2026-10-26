@@ -1,0 +1,137 @@
+{
+	"pages": [{
+			"path": "pages/index/index",
+			"style": {
+				"navigationBarTitleText": "首页",
+				"navigationStyle": "custom",
+				"navigationBarBackgroundColor": "#ffffff"
+			}
+		}, {
+			"path": "pages/login/login",
+			"style": {
+				"navigationBarTitleText": "",
+				"enablePullDownRefresh": false,
+				"navigationStyle": "custom"
+			}
+		}, {
+			"path": "pages/home/home",
+			"style": {
+				"navigationBarTitleText": "业务",
+				"navigationStyle": "custom"
+				// "enablePullDownRefresh": true
+			}
+		},
+		{
+			"path": "pages/inventory/inventory",
+			"style": {
+				"navigationBarTitleText": "库存",
+				"enablePullDownRefresh": false
+			}
+		},
+		{
+			"path": "pages/forms/forms",
+			"style": {
+				"navigationBarTitleText": "报表"
+			}
+		},
+		{
+			"path": "pages/more/more",
+			"style": {
+				"navigationBarTitleText": "更多"
+			}
+		},
+		{
+			"path": "pages/remand/remand",
+			"style": {
+				"navigationBarTitleText": "提醒",
+				"enablePullDownRefresh": true
+			}
+		},
+		{
+			"path": "pages/index/billing/billingDetail/billingDetail",
+			"style": {
+				"navigationBarTitleText": "消费开单-施工中",
+				"navigationStyle": "custom"
+			}
+		}, {
+			"path": "pages/index/billing/billingDetail/ChoseCard",
+			"style": {
+				"navigationStyle": "custom",
+				"enablePullDownRefresh": true
+			}
+		},
+		{
+			"path": "pages/index/billing/addConsumePro/addConsumePro",
+			"style": {
+				"navigationBarTitleText": "添加消费项目",
+				"enablePullDownRefresh": true,
+				"navigationStyle": "custom"
+			}
+		},
+		{
+			"path": "pages/index/billing/PayController/PayController",
+			"style": {
+				"navigationBarTitleText": "添加结算",
+				"enablePullDownRefresh": true
+			}
+		},
+		{
+			"path": "pages/index/orderList/orderList",
+			"style": {
+				"navigationBarTitleText": "临时订单",
+				"enablePullDownRefresh": false,
+				"navigationStyle": "custom"
+			}
+		}
+
+		, {
+			"path": "pages/car_info/add",
+			"style": {
+				"navigationBarTitleText": "新增"
+			}
+		}, {
+			"path": "pages/car_info/edit",
+			"style": {
+				"navigationBarTitleText": "车辆编辑"
+
+			}
+		}, {
+			"path": "pages/car_info/list",
+			"style": {
+				"navigationBarTitleText": "列表"
+			}
+		}, {
+			"path": "pages/car_info/detail",
+			"style": {
+				"navigationBarTitleText": "车辆信息"
+			}
+		},
+		// ……其他页面配置
+		{
+			"path": "uni_modules/uni-upgrade-center-app/pages/upgrade-popup",
+			"style": {
+				"disableScroll": true,
+				"app-plus": {
+					"backgroundColorTop": "transparent",
+					"background": "transparent",
+					"titleNView": false,
+					"scrollIndicator": false,
+					"popGesture": "none",
+					"animationType": "fade-in",
+					"animationDuration": 200
+
+				}
+			}
+		}
+	],
+
+	"globalStyle": {
+		"navigationBarTextStyle": "black",
+		"navigationBarTitleText": "uni-app",
+		"navigationBarBackgroundColor": "#F8F8F8",
+		"backgroundColor": "#F8F8F8",
+		"app-plus": {
+			"background": "#efeff4"
+		}
+	}
+}

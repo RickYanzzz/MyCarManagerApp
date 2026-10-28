@@ -122,6 +122,13 @@
 
 				}
 			}
+		},
+		{
+			"path": "pages/analytics/analytics",
+			"style": {
+				"navigationBarTitleText": "经营统计",
+				"enablePullDownRefresh": true
+			}
 		}
 	],
 

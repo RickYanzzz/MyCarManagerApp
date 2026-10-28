@@ -5,6 +5,7 @@ import {get_hot_goods,get_All_goods} from "./goods.js"
 import {get_purchased_goods,add_purchased_goods,delete_purchased_goods,update_purchased_goods} from "./purchased_goods.js"
 import {add_pay_info,get_pay_info,delete_pay_info} from "./pay_info.js"
 import {ocrLicensePlate} from "./image_ocr.js"
+import {get_analytics_summary} from "./analytics.js"
 export default {
 	login,
 	get_enterprise,
@@ -24,6 +25,7 @@ export default {
 	get_order_byStatus,
 	get_car_info_by_carNumber,
 	ocrLicensePlate,
+	get_analytics_summary,
 	delete_order,
 	get_order_byDate,
 	get_user_status

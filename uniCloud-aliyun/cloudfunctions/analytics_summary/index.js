@@ -37,6 +37,14 @@ const ORDER_STATUS_PAID = 2
 // status 历史上可能被写成数字或字符串，两种都匹配，避免漏单
 const PAID_STATUS_MATCH = dbCmd.in([ORDER_STATUS_PAID, String(ORDER_STATUS_PAID)])
 
+// 数据源映射：test 读隔离测试集合，real 读正式业务表。
+// 两套集合字段结构完全一致，所以聚合管道可以原样复用。
+const SOURCE_COLLECTIONS = {
+	test: { order: 'analytics_test_order', pay: 'analytics_test_pay_info' },
+	real: { order: 'order', pay: 'pay_infos' }
+}
+const DEFAULT_SOURCE = 'real'
+
 exports.main = async (event) => {
   const startedAt = Date.now()
 
@@ -62,6 +70,12 @@ exports.main = async (event) => {
       return { code: 401, status: 'error', message: '缺少 userId，无法校验门店权限' }
     }
 
+    const source = typeof (event && event.source) === 'string' ? event.source : DEFAULT_SOURCE
+    if (!SOURCE_COLLECTIONS[source]) {
+      return { code: 400, status: 'error', message: 'source 仅支持 real / test' }
+    }
+    const cols = SOURCE_COLLECTIONS[source]
+
     /* ---------------- 2. 服务端解析门店（忽略客户端传的 enterpriseId） ---------------- */
     const userRes = await db.collection('user').doc(userId).get()
     const user = userRes.data && userRes.data[0]
@@ -86,7 +100,7 @@ exports.main = async (event) => {
      * 也天然不会因为「一单多笔付款」被重复计数。
      */
     const orderAgg = await db
-      .collection('order')
+      .collection(cols.order)
       .aggregate()
       .match({
         enterpriseId: enterpriseId,
@@ -106,11 +120,11 @@ exports.main = async (event) => {
      * $sum 遇到非数字会静默当 0，宁可回到云函数里做安全转换。
      */
     const payAgg = await db
-      .collection('pay_infos')
+      .collection(cols.pay)
       .aggregate()
       .match({ enterpriseId: enterpriseId })
       .lookup({
-        from: 'order',
+        from: cols.order,
         localField: 'orderId',
         foreignField: '_id',
         as: 'orderInfo'
@@ -140,6 +154,7 @@ exports.main = async (event) => {
       status: 'success',
       data: {
         range: range,
+        source: source,
         startDate: rangeInfo.startDate,
         endDate: rangeInfo.endDate,
         generatedAt: Date.now(),

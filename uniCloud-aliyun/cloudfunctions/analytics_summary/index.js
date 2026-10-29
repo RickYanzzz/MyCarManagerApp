@@ -45,17 +45,48 @@ const SOURCE_COLLECTIONS = {
 }
 const DEFAULT_SOURCE = 'real'
 
+// 开关集合：与云函数环境变量等价的“数据库开关”。
+// 背景：实测本项目空间里，环境变量在上传云函数后可能失效（云端配置被覆盖），
+// 导致函数读不到 process.env。改由数据库读取后，开关只需改一条记录，不必重新部署。
+const FLAG_COLLECTION = 'app_config'
+
+async function resolveFlag(envName) {
+  const envValue = process.env[envName]
+  if (envValue === 'on') {
+    return { on: true, detail: '' }
+  }
+
+  let envNote = '未读到环境变量 ' + envName
+  if (typeof envValue === 'string') {
+    envNote = '环境变量 ' + envName + ' = ' + JSON.stringify(envValue) + '（不等于 on）'
+  }
+
+  try {
+    const res = await db.collection(FLAG_COLLECTION).where({ key: envName }).limit(1).get()
+    const doc = res.data && res.data[0]
+    if (doc) {
+      const v = String(doc.value === undefined ? '' : doc.value).trim()
+      if (v === 'on') return { on: true, detail: '' }
+      return { on: false, detail: envNote + '；app_config 中 value = ' + JSON.stringify(v) + '（不等于 on）' }
+    }
+    return { on: false, detail: envNote + '；app_config 中也没有 key = ' + envName + ' 的记录' }
+  } catch (e) {
+    return { on: false, detail: envNote + '；读取 app_config 失败：' + ((e && e.message) || '未知错误') }
+  }
+}
+
 exports.main = async (event) => {
   const startedAt = Date.now()
 
   try {
     /* ---------------- 0. 可信认证闸门（fail-closed） ---------------- */
-    if (process.env.ANALYTICS_TRUSTED_AUTH !== 'on') {
-      console.warn('[analytics_summary] 拒绝调用：ANALYTICS_TRUSTED_AUTH 未开启')
+    const flag = await resolveFlag('ANALYTICS_TRUSTED_AUTH')
+    if (!flag.on) {
+      console.warn('[analytics_summary] 拒绝调用：', flag.detail)
       return {
         code: 403,
         status: 'error',
-        message: '统计接口未启用可信认证，已拒绝访问（防止跨门店越权读取经营数据）'
+        message: '统计接口未启用可信认证，已拒绝访问。诊断：' + flag.detail
       }
     }
 

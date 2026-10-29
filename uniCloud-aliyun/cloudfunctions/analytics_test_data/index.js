@@ -55,6 +55,34 @@ function ok(data) {
 	return { code: 200, status: 'success', data: data }
 }
 
+// 开关集合：与环境变量等价的“数据库开关”，避免上传函数时云端环境变量被覆盖后失效
+const FLAG_COLLECTION = 'app_config'
+
+async function resolveFlag(envName) {
+	const envValue = process.env[envName]
+	if (envValue === 'on') {
+		return { on: true, detail: '' }
+	}
+
+	let envNote = '未读到环境变量 ' + envName
+	if (typeof envValue === 'string') {
+		envNote = '环境变量 ' + envName + ' = ' + JSON.stringify(envValue) + '（不等于 on）'
+	}
+
+	try {
+		const res = await db.collection(FLAG_COLLECTION).where({ key: envName }).limit(1).get()
+		const doc = res.data && res.data[0]
+		if (doc) {
+			const v = String(doc.value === undefined ? '' : doc.value).trim()
+			if (v === 'on') return { on: true, detail: '' }
+			return { on: false, detail: envNote + '；app_config 中 value = ' + JSON.stringify(v) + '（不等于 on）' }
+		}
+		return { on: false, detail: envNote + '；app_config 中也没有 key = ' + envName + ' 的记录' }
+	} catch (e) {
+		return { on: false, detail: envNote + '；读取 app_config 失败：' + ((e && e.message) || '未知错误') }
+	}
+}
+
 function toNumber(v, fallback) {
 	const n = Number(v)
 	return isFinite(n) ? n : fallback
@@ -344,9 +372,10 @@ exports.main = async (event) => {
 	const startedAt = Date.now()
 	try {
 		/* 写操作默认关闭，防止误用 */
-		if (process.env.ANALYTICS_TEST_DATA_ENABLED !== 'on') {
-			console.warn('[analytics_test_data] 拒绝调用：ANALYTICS_TEST_DATA_ENABLED 未开启')
-			return fail(403, '测试数据接口未启用，已拒绝访问（安全默认关闭）')
+		const flag = await resolveFlag('ANALYTICS_TEST_DATA_ENABLED')
+		if (!flag.on) {
+			console.warn('[analytics_test_data] 拒绝调用：', flag.detail)
+			return fail(403, '测试数据接口未启用，已拒绝访问。诊断：' + flag.detail)
 		}
 
 		const action = typeof event.action === 'string' ? event.action : ''

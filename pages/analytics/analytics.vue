@@ -170,14 +170,19 @@
 						disableGrid: true,
 						fontColor: '#8A94A6',
 						fontSize: 10,
-						itemCount: 6,
 						axisLineColor: '#E6EAF2'
 					},
 					yAxis: {
 						gridType: 'dash',
 						dashLength: 3,
 						gridColor: '#EEF1F6',
-						data: [{ min: 0, fontColor: '#8A94A6', fontSize: 10, axisLineColor: 'rgba(0,0,0,0)' }]
+						splitNumber: 4,
+						data: [{
+							min: 0,
+							fontColor: '#8A94A6',
+							fontSize: 10,
+							axisLineColor: 'rgba(0,0,0,0)'
+						}]
 					},
 					extra: {
 						line: { type: 'curve', width: 2, activeType: 'hollow' }
@@ -192,14 +197,19 @@
 						disableGrid: true,
 						fontColor: '#8A94A6',
 						fontSize: 10,
-						itemCount: 6,
 						axisLineColor: '#E6EAF2'
 					},
 					yAxis: {
 						gridType: 'dash',
 						dashLength: 3,
 						gridColor: '#EEF1F6',
-						data: [{ min: 0, fontColor: '#8A94A6', fontSize: 10, axisLineColor: 'rgba(0,0,0,0)' }]
+						splitNumber: 4,
+						data: [{
+							min: 0,
+							fontColor: '#8A94A6',
+							fontSize: 10,
+							axisLineColor: 'rgba(0,0,0,0)'
+						}]
 					},
 					extra: {
 						column: { type: 'group', activeBgColor: '#6EA0F7', activeBgOpacity: 0.1, linearType: 'none' }
@@ -209,6 +219,10 @@
 					color: RING_COLORS,
 					padding: [8, 8, 8, 8],
 					dataLabel: false,
+					// uCharts 环形图默认会在圆心写「收益率 / 70%」的示例文案，
+					// 本项目没有成本数据、不展示任何收益率，必须置空，否则会显示虚构指标
+					title: { name: '', fontSize: 14, color: 'rgba(0,0,0,0)' },
+					subtitle: { name: '', fontSize: 18, color: 'rgba(0,0,0,0)' },
 					legend: {
 						show: false
 					},
@@ -326,6 +340,12 @@
 					categories: categories,
 					series: [{ name: '工单', data: orders }]
 				}
+
+				// X 轴标签数量随区间调整：90 天全画出来会糊成一团
+				const labelCount = this.range <= 7 ? 7 : (this.range <= 30 ? 6 : 5)
+				// 轴刻度用整数步长，避免出现 0.80 / 1.60 这类小数刻度
+				this.optsLine = this.applyAxis(this.optsLine, this.makeAxis(amounts), labelCount)
+				this.optsColumn = this.applyAxis(this.optsColumn, this.makeAxis(orders), labelCount)
 				this.ringData = {
 					series: [{
 						data: (this.payTypes || [])
@@ -335,6 +355,56 @@
 							})
 					}]
 				}
+			},
+
+			/**
+			 * 计算 Y 轴最大值与分段数，保证步长是整数。
+			 * uCharts 柱状图不认 yAxis.data[0].formatter，只能通过 max / splitNumber 控制刻度。
+			 */
+			makeAxis(values) {
+				const list = values || []
+				let maxValue = 0
+				for (let i = 0; i < list.length; i++) {
+					if (list[i] > maxValue) maxValue = list[i]
+				}
+				const max = Math.max(1, Math.ceil(maxValue))
+
+				// 数值很小（比如每天最多 4 单）时，直接一个刻度一个单位
+				if (max <= 4) {
+					return { max: max, splitNumber: max }
+				}
+
+				const candidates = [1, 2, 5, 10]
+				let best = null
+				for (let exp = 0; exp <= 6 && !best; exp++) {
+					for (let c = 0; c < candidates.length; c++) {
+						const step = candidates[c] * Math.pow(10, exp)
+						const splitNumber = Math.ceil(max / step)
+						// 优先选 3~5 段，段数太少刻度太粗，太多又挤
+						if (splitNumber >= 3 && splitNumber <= 5) {
+							best = { max: step * splitNumber, splitNumber: splitNumber }
+							break
+						}
+					}
+				}
+				return best || { max: max, splitNumber: 4 }
+			},
+
+			/** 用算好的刻度重建一份 opts，保持对象引用变化以便图表刷新 */
+			applyAxis(baseOpts, axis, labelCount) {
+				const yAxis = baseOpts.yAxis || {}
+				const first = (yAxis.data && yAxis.data[0]) || {}
+				const xAxis = baseOpts.xAxis || {}
+				return Object.assign({}, baseOpts, {
+					yAxis: Object.assign({}, yAxis, {
+						splitNumber: axis.splitNumber,
+						data: [Object.assign({}, first, { min: 0, max: axis.max })]
+					}),
+					// uCharts 用 labelCount 控制 X 轴标签数量。
+					// itemCount 只在 enableScroll 时生效，且与 labelCount 同时设置会按天数比例放大标签数，
+					// 所以这里只用 labelCount，不设 itemCount。
+					xAxis: Object.assign({}, xAxis, { labelCount: labelCount })
+				})
 			},
 
 			formatShortDate(dateStr) {

@@ -191,6 +191,20 @@ this.$api.clear_analytics_test_data()
 4. 打开 uniCloud 控制台 → 云函数 → 对应函数 → 配置 → **环境变量**：
    - `analytics_summary`：`ANALYTICS_TRUSTED_AUTH = on`
    - `analytics_test_data`：`ANALYTICS_TEST_DATA_ENABLED = on`
+
+   ⚠️ **实测坑**：阿里云版空间里，重新上传云函数后环境变量可能失效（云端配置被覆盖），
+   函数读不到 `process.env`。所以两个云函数还支持**数据库开关**作为等价替代：
+
+   1. 云数据库新建集合 `app_config`
+   2. 添加记录（两条）：
+
+   | key | value |
+   |---|---|
+   | `ANALYTICS_TRUSTED_AUTH` | `on` |
+   | `ANALYTICS_TEST_DATA_ENABLED` | `on` |
+
+   函数读取顺序是「环境变量 → app_config」，任一为 `on` 即视为开启。
+   数据库方式的好处是**改一条记录就生效，不用重新部署函数**，也不会被上传覆盖。
 5. 前端 `common/js/analytics-config.js` 改成 `useMock: false`
 6. 先 `seed` 造数 → 看页面 → 数字对得上再切 `source: 'real'`
 

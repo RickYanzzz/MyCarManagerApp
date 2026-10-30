@@ -1,0 +1,7 @@
+{
+  "name": "analytics_test_data",
+  "dependencies": {},
+  "extensions": {
+    "uni-cloud-jql": {}
+  }
+}

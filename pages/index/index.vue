@@ -64,7 +64,11 @@
 						id: 9,
 						icon: 'icon-qiapian',
 						url: "/pages/spare_parts/list",
-						text: "备品备件"
+						text: "备品备件"},{
+						id: 10,
+						icon: 'icon-xiaofeimingxidan',
+						url: "/pages/analytics/analytics",
+						text: "经营统计"
 					}
 					// , {
 					// 	id: 5,

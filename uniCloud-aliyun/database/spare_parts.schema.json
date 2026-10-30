@@ -1,0 +1,84 @@
+{
+	"bsonType": "object",
+	"required": ["name", "unit"],
+	"permission": {
+		"read": false,
+		"create": false,
+		"update": false,
+		"delete": false
+	},
+	"properties": {
+		"_id": {
+			"description": "ID，系统自动生成"
+		},
+		"enterpriseId": {
+			"title": "企业ID",
+			"bsonType": "string",
+			"foreignKey": "enterprise._id",
+			"description": "备件所属企业"
+		},
+		"code": {
+			"title": "备件编号",
+			"bsonType": "string",
+			"description": "自动生成，格式 SP0001"
+		},
+		"name": {
+			"title": "备件名称",
+			"bsonType": "string",
+			"description": "备件名称"
+		},
+		"spec": {
+			"title": "规格/型号",
+			"bsonType": "string",
+			"description": "规格或型号"
+		},
+		"unit": {
+			"title": "单位",
+			"bsonType": "string",
+			"description": "个、件、套、桶等"
+		},
+		"stock": {
+			"title": "当前库存",
+			"bsonType": "int",
+			"description": "当前可用数量"
+		},
+		"safetyStock": {
+			"title": "安全库存",
+			"bsonType": "int",
+			"description": "低于该值触发低库存预警"
+		},
+		"location": {
+			"title": "仓位",
+			"bsonType": "string",
+			"description": "货架或仓库位置"
+		},
+		"supplier": {
+			"title": "供应商",
+			"bsonType": "string",
+			"description": "默认供应商"
+		},
+		"costPrice": {
+			"title": "成本价",
+			"bsonType": "int",
+			"description": "采购成本价，单位元"
+		},
+		"salePrice": {
+			"title": "销售价",
+			"bsonType": "int",
+			"description": "出库计入工单的单价，单位元"
+		},
+		"status": {
+			"title": "状态",
+			"bsonType": "int",
+			"description": "1 启用，0 停用"
+		},
+		"createdAt": {
+			"title": "创建时间",
+			"bsonType": "timestamp"
+		},
+		"updatedAt": {
+			"title": "更新时间",
+			"bsonType": "timestamp"
+		}
+	}
+}

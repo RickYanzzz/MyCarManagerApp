@@ -26,6 +26,9 @@
 					</swiper-item>
 				</swiper>
 			</view>
+			<view class="spare-part-bar" v-if="order.status!=2 && order._id">
+				<button class="spare-part-btn" type="primary" size="mini" @click="addSparePart">+ 添加备件</button>
+			</view>
 			<section-view v-for="(item,index) in sectionList" :status="order.status" :item="item" :index="index"
 				@onDeleteItem="onDeleteItem" @clickSection="clickSection" @modifyMyItem="modifyItem">
 			</section-view>
@@ -56,6 +59,18 @@
 			<pay-type-view v-show="isShowpPayType" @clickPayTypeView="clickPayTypeView"></pay-type-view>
 			<pay-view ref="payviewRef" v-show="isShowpPayView" @addPayItem="addPayItem"></pay-view>
 			<modify-view ref="modifyviewRef" v-show="isShowModifyItem" @updatePurchase="updatePurchase"></modify-view>
+			<view v-show="isShowReturn" class="return-view">
+				<view class="return-title">备件退料</view>
+				<view class="return-line">{{ returnItem.name }}（已用 {{ returnItem.count }} {{ returnItem.unit }}）</view>
+				<view class="return-line return-qty-line">
+					<text>退料数量</text>
+					<uni-number-box :value="returnQty" :min="1" :max="Number(returnItem.count) || 1" @change="returnQty = $event" />
+				</view>
+				<view class="return-btns">
+					<button class="return-btn" size="mini" @click="closeReturn">取消</button>
+					<button class="return-btn" size="mini" type="primary" @click="confirmReturn">确定退料</button>
+				</view>
+			</view>
 		</s-popup>
 	</view>
 </template>
@@ -69,6 +84,9 @@
 				isShowpPayView: false,
 				isPopupShow: false,
 				isShowModifyItem: false,
+				isShowReturn: false,
+				returnItem: {},
+				returnQty: 1,
 				selectIndex: 0,
 				carNumber: "临牌",
 				headerTitle: "单号20231118004-施工中",
@@ -146,11 +164,63 @@
 				if (this.order.status == 2) {
 					return;
 				}
+				if (item.source === 'spare_part') {
+					this.returnItem = item
+					this.returnQty = Number(item.count) || 1
+					this.isPopupShow = true
+					this.isShowpPayType = false
+					this.isShowpPayView = false
+					this.isShowModifyItem = false
+					this.isShowReturn = true
+					return
+				}
 				this.isPopupShow = true
 				this.isShowpPayType = false
 				this.isShowpPayView = false
 				this.isShowModifyItem = true
+				this.isShowReturn = false
 				this.$refs.modifyviewRef.loadData(item)
+			},
+			addSparePart() {
+				const that = this
+				if (!this.order._id || this.order.status == 2) return
+				uni.navigateTo({
+					url: '/pages/spare_parts/issue?orderId=' + this.order._id +
+						'&carId=' + this.carInfo._id +
+						'&carNumber=' + encodeURIComponent(this.carInfo.carNumber || ''),
+					events: {
+						sparePartsIssued: () => {
+							that.loadData(that.order._id)
+						}
+					}
+				})
+			},
+			closeReturn() {
+				this.isShowReturn = false
+				this.isPopupShow = false
+			},
+			confirmReturn() {
+				const qty = parseInt(this.returnQty)
+				if (!qty || qty <= 0) {
+					return uni.showToast({ title: '请输入退料数量', icon: 'none' })
+				}
+				if (qty > Number(this.returnItem.count || 0)) {
+					return uni.showToast({ title: '退料数量不能大于已用数量', icon: 'none' })
+				}
+				const that = this
+				this.$api.return_spare_part({
+					id: this.returnItem._id,
+					qty: qty
+				}).then(() => {
+					that.closeReturn()
+					that.loadData(that.order._id)
+					uni.showToast({ title: '退料成功', icon: 'none' })
+				}).catch(err => {
+					uni.showToast({
+						title: (err && (err.msg || err.errMsg)) || '退料失败',
+						icon: 'none'
+					})
+				})
 			},
 			updatePurchase() {
 				this.isPopupShow = false
@@ -473,5 +543,54 @@
 		padding: 0 20px;
 		padding-top: 30px;
 		color: $uni-text-color-grey;
+	}
+
+	.spare-part-bar {
+		margin: 10px 15px 0;
+		text-align: right;
+	}
+
+	.spare-part-btn {
+		background-color: $uni-color-primary;
+		font-size: 12px;
+		padding: 0 14px;
+	}
+
+	.return-view {
+		width: 280px;
+		background: #ffffff;
+		border-radius: 10px;
+		padding: 18px;
+	}
+
+	.return-title {
+		font-size: 17px;
+		font-weight: 600;
+		color: #333333;
+		text-align: center;
+		margin-bottom: 14px;
+	}
+
+	.return-line {
+		font-size: 14px;
+		color: #333333;
+		margin-bottom: 12px;
+	}
+
+	.return-qty-line {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+	}
+
+	.return-btns {
+		display: flex;
+		justify-content: space-between;
+		margin-top: 10px;
+	}
+
+	.return-btn {
+		width: 110px;
+		margin: 0;
 	}
 </style>

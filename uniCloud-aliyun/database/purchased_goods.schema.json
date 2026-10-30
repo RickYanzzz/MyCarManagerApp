@@ -1,1 +1,68 @@
-{"bsonType":"object","required":[],"permission":{"read":false,"create":false,"update":false,"delete":false},"properties":{"_id":{"description":"ID，系统自动生成"}}}
+{
+	"bsonType": "object",
+	"required": [],
+	"permission": {
+		"read": false,
+		"create": false,
+		"update": false,
+		"delete": false
+	},
+	"properties": {
+		"_id": {
+			"description": "ID，系统自动生成"
+		},
+		"userId": {
+			"title": "用户ID",
+			"bsonType": "string",
+			"foreignKey": "user._id"
+		},
+		"enterpriseId": {
+			"title": "企业ID",
+			"bsonType": "string",
+			"foreignKey": "enterprise._id"
+		},
+		"name": {
+			"title": "项目名称",
+			"bsonType": "string"
+		},
+		"fee": {
+			"title": "金额",
+			"bsonType": "int"
+		},
+		"count": {
+			"title": "数量",
+			"bsonType": "int"
+		},
+		"orderId": {
+			"title": "工单ID",
+			"bsonType": "string"
+		},
+		"carId": {
+			"title": "车辆ID",
+			"bsonType": "string"
+		},
+		"status": {
+			"title": "状态",
+			"bsonType": "int",
+			"description": "0 当前消费项目，1 已购项目"
+		},
+		"source": {
+			"title": "来源",
+			"bsonType": "string",
+			"description": "goods 普通消费项目；spare_part 备件费用"
+		},
+		"partId": {
+			"title": "备件ID",
+			"bsonType": "string",
+			"foreignKey": "spare_parts._id"
+		},
+		"spec": {
+			"title": "规格",
+			"bsonType": "string"
+		},
+		"unit": {
+			"title": "单位",
+			"bsonType": "string"
+		}
+	}
+}

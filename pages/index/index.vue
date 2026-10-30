@@ -60,6 +60,11 @@
 						icon: 'icon-ruzhang',
 						url: "./orderList/orderList?status=2",
 						text: "入账订单"
+					}, {
+						id: 10,
+						icon: 'icon-xiaofeimingxidan',
+						url: "/pages/analytics/analytics",
+						text: "经营统计"
 					}
 					// , {
 					// 	id: 5,

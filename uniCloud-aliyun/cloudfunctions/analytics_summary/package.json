@@ -1,0 +1,7 @@
+{
+  "name": "analytics_summary",
+  "dependencies": {},
+  "extensions": {
+    "uni-cloud-jql": {}
+  }
+}

@@ -50,7 +50,7 @@
 		padding: 20px;
 	}
 
-	/deep/ .my-grid {
+	::v-deep .my-grid {
 		margin-left: 5px;
 		margin-right: 5px;
 		display: flex;
@@ -58,7 +58,7 @@
 		border: 0;
 	}
 
-	/deep/ .my-grid-item {
+	::v-deep .my-grid-item {
 
 		margin-bottom: 20px;
 		display: flex;

@@ -1,0 +1,9 @@
+{
+  "navigationBarTitleText": "编辑备件",
+  "navigationStyle": "custom",
+  "enablePullDownRefresh": false,
+  "usingComponents": {
+    "nav-header": "/components/nav-header/nav-header",
+    "uni-easyinput": "/uni_modules/uni-easyinput/components/uni-easyinput/uni-easyinput"
+  }
+}

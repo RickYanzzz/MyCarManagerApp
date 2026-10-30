@@ -1,0 +1,10 @@
+{
+  "navigationBarTitleText": "添加备件",
+  "navigationStyle": "custom",
+  "enablePullDownRefresh": false,
+  "usingComponents": {
+    "nav-header": "/components/nav-header/nav-header",
+    "uni-search-bar": "/uni_modules/uni-search-bar/components/uni-search-bar/uni-search-bar",
+    "uni-number-box": "/uni_modules/uni-number-box/components/uni-number-box/uni-number-box"
+  }
+}

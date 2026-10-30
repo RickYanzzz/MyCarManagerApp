@@ -4,6 +4,10 @@
     "pages/login/login",
     "pages/home/home",
     "pages/inventory/inventory",
+    "pages/spare_parts/list",
+    "pages/spare_parts/detail",
+    "pages/spare_parts/edit",
+    "pages/spare_parts/issue",
     "pages/forms/forms",
     "pages/more/more",
     "pages/remand/remand",
@@ -16,7 +20,8 @@
     "pages/car_info/edit",
     "pages/car_info/list",
     "pages/car_info/detail",
-    "uni_modules/uni-upgrade-center-app/pages/upgrade-popup"
+    "uni_modules/uni-upgrade-center-app/pages/upgrade-popup",
+    "pages/analytics/analytics"
   ],
   "subPackages": [],
   "window": {

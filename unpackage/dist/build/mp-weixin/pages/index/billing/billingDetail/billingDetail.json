@@ -11,6 +11,7 @@
     "pay-type-view": "/components/pay-type-view/pay-type-view",
     "pay-view": "/components/pay-view/pay-view",
     "modify-view": "/components/modify-view/modify-view",
+    "uni-number-box": "/uni_modules/uni-number-box/components/uni-number-box/uni-number-box",
     "s-popup": "/components/s-popup/index"
   }
 }

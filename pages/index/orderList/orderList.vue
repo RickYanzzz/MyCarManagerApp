@@ -1,7 +1,7 @@
 <template>
 	<view>
 		<nav-header type="addConsumePro" :title="title"></nav-header>
-		<uni-section title="" padding="0">
+		<uni-section padding="0">
 			<view class="search-result">
 				<uni-list>
 					<order-item @getAllOrderByStatus="getAllOrderByStatus" v-for="item in dataList" :item="item"

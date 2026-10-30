@@ -17,14 +17,14 @@
 .char-number {
   padding: 20px;
 }
- .my-grid {
+.my-grid {
   margin-left: 5px;
   margin-right: 5px;
   display: flex;
   flex: 1;
   border: 0;
 }
- .my-grid-item {
+.my-grid-item {
   margin-bottom: 20px;
   display: flex;
   justify-content: center;
@@ -43,4 +43,3 @@
   color: #999;
   font-weight: 600;
 }
-

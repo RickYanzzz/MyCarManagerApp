@@ -1,7 +1,7 @@
 <template>
 	<view class="my-content">
 		<nav-header type="home"></nav-header>
-		<uni-section title="" class="my-section">
+		<uni-section class="my-section">
 			<view class="header">
 				<view class="header-left">
 					<view>

@@ -1,7 +1,7 @@
 <template>
 	<view style="position: relative;">
 		<nav-header type="orderDetail" :title="headerTitle"></nav-header>
-		<uni-section title="">
+		<uni-section>
 			<header-card  @clickHeaderCard="clickHeaderCard" :carInfo="carInfo"></header-card>
 		</uni-section>
 		<view style="padding-bottom: 80px;">

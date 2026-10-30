@@ -1,19 +1,4 @@
 @charset "UTF-8";
-/* 水平间距 */
-/* 水平间距 */
-/* 颜色变量 */
-/* 行为相关颜色 */
-/* 文字基本颜色 */
-/* 背景颜色 */
-/* 边框颜色 */
-/* 尺寸变量 */
-/* 文字尺寸 */
-/* 图片尺寸 */
-/* Border Radius */
-/* 水平间距 */
-/* 垂直间距 */
-/* 透明度 */
-/* 文章场景相关 */
 /*每个页面公共css */
 /* 水平间距 */
 @font-face {
@@ -32,6 +17,21 @@
 .zhuanfa:before {
   content: "\e610";
 }
+/* 水平间距 */
+/* 水平间距 */
+/* 颜色变量 */
+/* 行为相关颜色 */
+/* 文字基本颜色 */
+/* 背景颜色 */
+/* 边框颜色 */
+/* 尺寸变量 */
+/* 文字尺寸 */
+/* 图片尺寸 */
+/* Border Radius */
+/* 水平间距 */
+/* 垂直间距 */
+/* 透明度 */
+/* 文章场景相关 */
 .uni-border {
   border: 1px #F0F0F0 solid;
 }
@@ -2093,7 +2093,7 @@
 }
 .uni-btn[type=primary][disabled], .uni-btn[type=primary][disabled][loading], .uni-btn[type=primary][disabled]:not([hover-class]):active {
   color: #fff;
-  border-color: #80adfa;
+  border-color: #80aefa;
   background-color: #94bcff;
 }
 .uni-btn[type=primary][plain] {
@@ -2153,7 +2153,7 @@
 }
 .uni-btn[type=success][disabled], .uni-btn[type=success][disabled][loading], .uni-btn[type=success][disabled]:not([hover-class]):active {
   color: #fff;
-  border-color: #89c794;
+  border-color: #89c795;
   background-color: #8cde9b;
 }
 .uni-btn[type=success][plain] {
@@ -2333,7 +2333,7 @@
 }
 .uni-btn[type=info][disabled], .uni-btn[type=info][disabled][loading], .uni-btn[type=info][disabled]:not([hover-class]):active {
   color: #fff;
-  border-color: #babcc1;
+  border-color: #babcc2;
   background-color: #c7c9ce;
 }
 .uni-btn[type=info][plain] {
@@ -2374,4 +2374,3 @@ page {
   color: #333;
   padding: 10px;
 }
-

@@ -13,8 +13,8 @@
   },
   "compileType": "miniprogram",
   "libVersion": "",
-  "appid": "touristappid",
-  "projectname": "智慧车店",
+  "appid": "wx7c92f00cc06e5bfe",
+  "projectname": "MyCarManagerApp",
   "condition": {
     "search": {
       "current": -1,

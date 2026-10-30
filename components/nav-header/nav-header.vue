@@ -1,23 +1,23 @@
 <template>
 	<view class="my-nav-header">
 		<view class="status-bar"></view>
-		<view class="home-nav" v-show="type=='home'">
+		<view class="home-nav" v-if="type=='home'">
 			<view><text class="nav-text">{{enterprise.name}}</text></view>
 			<view><text class="nav-text">{{userInfo.realName}}</text></view>
 		</view>
-		<view class="home-nav" v-show="type=='carNumber'">
+		<view class="home-nav" v-if="type=='carNumber'">
 			<view><text class="iconfont icon-fanhui car-text" @click="goBack"></text></view>
 			<view><text class="nav-text">开单</text></view>
 			<view @click="choseImage"><text class="iconfont icon-xiangji car-text"></text></view>
 		</view>
-		<view class="home-nav" v-show="type=='orderDetail'">
+		<view class="home-nav" v-if="type=='orderDetail'">
 			<view><text class="iconfont icon-fanhui car-text" @click="goBack"></text></view>
 			<view><text class="nav-text">{{title}}</text></view>
 			<view>
 				<!-- <text class="iconfont icon-sandian" style="color: #fff;font-size: 25px;"/> -->
 			</view>
 		</view>
-		<view class="home-nav" v-show="type=='addConsumePro'">
+		<view class="home-nav" v-if="type=='addConsumePro'">
 			<view><text class="iconfont icon-fanhui car-text" @click="goBack"></text></view>
 			<view><text class="nav-text">{{title}}</text></view>
 			<view><text></text></view>

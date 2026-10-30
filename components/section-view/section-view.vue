@@ -11,8 +11,8 @@
 		<view class="list-view">
 			<uni-list v-if="item.id == 0" >
 				<view class="" v-for="(data,index) in item.list" :key="index">
-						<uni-swipe-action-item :disabled="status==2" :right-options="options" @click="onClick(data)" @change="change">
-							<uni-list-item :title="data.name+' x'+data.count" :show-badge="true" :right-text="data.fee" 
+						<uni-swipe-action-item :disabled="status==2 || data.source==='spare_part'" :right-options="options" @click="onClick(data)" @change="change">
+							<uni-list-item :title="(data.source==='spare_part' ? '[备件] ' : '') + data.name+' x'+data.count" :show-badge="true" :right-text="data.fee"
 								:badge-style="{background: '#CC71BF'}" clickable="true" @click="modifyItem(data)">
 							</uni-list-item>
 						</uni-swipe-action-item>

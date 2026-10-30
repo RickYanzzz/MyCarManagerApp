@@ -1,0 +1,7 @@
+{
+  "name": "stock_in_spare_part",
+  "dependencies": {},
+  "extensions": {
+    "uni-cloud-jql": {}
+  }
+}

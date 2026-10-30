@@ -1,72 +1,136 @@
 <template>
-  <view class="container">
-    <unicloud-db ref="udb" v-slot:default="{data, pagination, loading, hasMore, error}" :collection="collectionList" field="carNumber,owner,ownerphone,carType,brand,engineNumber,frame,insure,other">
-      <view v-if="error">{{error.message}}</view>
-      <view v-else-if="data">
-        <uni-list>
-          <uni-list-item v-for="(item, index) in data" :key="index" showArrow :clickable="true" @click="handleItemClick(item._id)">
-            <template v-slot:body>
-              <text>
-                <!-- 此处默认显示为_id，请根据需要自行修改为其他字段 -->
-                <!-- 如果使用了联表查询，请参考生成的 admin 项目中 list.vue 页面 -->
-                {{item._id}}
-              </text>
-            </template>
-          </uni-list-item>
-        </uni-list>
-      </view>
-      <uni-load-more :status="loading?'loading':(hasMore ? 'more' : 'noMore')"></uni-load-more>
-    </unicloud-db>
-    <uni-fab ref="fab" horizontal="right" vertical="bottom" :pop-menu="false" @fabClick="fabClick" />
-  </view>
+	<view class="container">
+		<view class="search-wrap">
+			<uni-search-bar v-model="keyword" placeholder="搜索车牌 / 车主 / 电话" :radius="100"
+				cancel-button="none"></uni-search-bar>
+		</view>
+
+		<uni-list>
+			<uni-list-item v-for="item in filteredList" :key="item._id" showArrow :clickable="true"
+				@click="handleItemClick(item._id)">
+				<template v-slot:body>
+					<view class="car-row">
+						<view class="car-main">
+							<text class="car-number">{{ item.carNumber || '临牌' }}</text>
+							<text class="car-owner">{{ item.owner || '未填写车主' }}</text>
+						</view>
+						<text class="car-sub">{{ item.brand || '' }}<text v-if="item.ownerphone"> · {{ item.ownerphone }}</text></text>
+					</view>
+				</template>
+			</uni-list-item>
+		</uni-list>
+
+		<view class="empty" v-if="!filteredList.length">暂无车辆</view>
+		<view class="bottom-space"></view>
+
+		<uni-fab ref="fab" horizontal="right" vertical="bottom" :pop-menu="false" @fabClick="fabClick" />
+	</view>
 </template>
 
 <script>
-  const db = uniCloud.database()
-  export default {
-    data() {
-      return {
-        collectionList: "car_info",
-        loadMore: {
-          contentdown: '',
-          contentrefresh: '',
-          contentnomore: ''
-        }
-      }
-    },
-    onPullDownRefresh() {
-      this.$refs.udb.loadData({
-        clear: true
-      }, () => {
-        uni.stopPullDownRefresh()
-      })
-    },
-    onReachBottom() {
-      this.$refs.udb.loadMore()
-    },
-    methods: {
-      handleItemClick(id) {
-        uni.navigateTo({
-          url: './detail?id=' + id
-        })
-      },
-      fabClick() {
-        // 打开新增页面
-        uni.navigateTo({
-          url: './add',
-          events: {
-            // 监听新增数据成功后, 刷新当前页面数据
-            refreshData: () => {
-              this.$refs.udb.loadData({
-                clear: true
-              })
-            }
-          }
-        })
-      }
-    }
-  }
+	export default {
+		data() {
+			return {
+				keyword: '',
+				dataList: []
+			}
+		},
+		computed: {
+			filteredList() {
+				const keyword = String(this.keyword || '').trim().toLowerCase()
+				if (!keyword) return this.dataList
+				return this.dataList.filter(item => {
+					const text = [item.carNumber, item.owner, item.ownerphone, item.brand].join(' ').toLowerCase()
+					return text.indexOf(keyword) > -1
+				})
+			}
+		},
+		onShow() {
+			this.loadList()
+		},
+		methods: {
+			loadList() {
+				uni.showLoading({
+					title: '加载中...'
+				})
+				this.$api.get_car_info_list({}).then(res => {
+					this.dataList = res.data || []
+				}).catch(err => {
+					uni.showToast({
+						title: (err && (err.msg || err.errMsg)) || '加载失败',
+						icon: 'none'
+					})
+				}).finally(() => {
+					uni.hideLoading()
+				})
+			},
+			handleItemClick(id) {
+				uni.navigateTo({
+					url: './detail?id=' + id
+				})
+			},
+			fabClick() {
+				uni.navigateTo({
+					url: './add',
+					events: {
+						refreshData: () => {
+							this.loadList()
+						}
+					}
+				})
+			}
+		}
+	}
 </script>
 
 <style>
+	.container {
+		padding: 10px;
+		background-color: #F4F8FB;
+		min-height: 100vh;
+		box-sizing: border-box;
+	}
+
+	.search-wrap {
+		margin-bottom: 6px;
+	}
+
+	.car-row {
+		display: flex;
+		flex-direction: column;
+	}
+
+	.car-main {
+		display: flex;
+		align-items: center;
+	}
+
+	.car-number {
+		font-size: 16px;
+		font-weight: 600;
+		color: #333333;
+	}
+
+	.car-owner {
+		margin-left: 10px;
+		font-size: 14px;
+		color: #666666;
+	}
+
+	.car-sub {
+		margin-top: 4px;
+		font-size: 12px;
+		color: #999999;
+	}
+
+	.empty {
+		padding: 80px 0;
+		text-align: center;
+		color: #999999;
+		font-size: 14px;
+	}
+
+	.bottom-space {
+		height: 80px;
+	}
 </style>

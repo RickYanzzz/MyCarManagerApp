@@ -1,0 +1,75 @@
+{
+	"bsonType": "object",
+	"required": ["partId", "type", "qty"],
+	"permission": {
+		"read": false,
+		"create": false,
+		"update": false,
+		"delete": false
+	},
+	"properties": {
+		"_id": {
+			"description": "ID，系统自动生成"
+		},
+		"enterpriseId": {
+			"title": "企业ID",
+			"bsonType": "string",
+			"foreignKey": "enterprise._id"
+		},
+		"partId": {
+			"title": "备件ID",
+			"bsonType": "string",
+			"foreignKey": "spare_parts._id"
+		},
+		"partName": {
+			"title": "备件名称",
+			"bsonType": "string"
+		},
+		"type": {
+			"title": "流水类型",
+			"bsonType": "string",
+			"description": "in 入库，out 出库，return 退料，adjust 盘点调整"
+		},
+		"qty": {
+			"title": "数量",
+			"bsonType": "int",
+			"description": "入库/出库/退料为正数；盘点为差异值，可正可负"
+		},
+		"beforeStock": {
+			"title": "操作前库存",
+			"bsonType": "int"
+		},
+		"afterStock": {
+			"title": "操作后库存",
+			"bsonType": "int"
+		},
+		"unitPrice": {
+			"title": "单价",
+			"bsonType": "int"
+		},
+		"orderId": {
+			"title": "工单ID",
+			"bsonType": "string"
+		},
+		"carId": {
+			"title": "车辆ID",
+			"bsonType": "string"
+		},
+		"operatorId": {
+			"title": "操作人ID",
+			"bsonType": "string"
+		},
+		"operatorName": {
+			"title": "操作人",
+			"bsonType": "string"
+		},
+		"remark": {
+			"title": "备注",
+			"bsonType": "string"
+		},
+		"createdAt": {
+			"title": "操作时间",
+			"bsonType": "timestamp"
+		}
+	}
+}

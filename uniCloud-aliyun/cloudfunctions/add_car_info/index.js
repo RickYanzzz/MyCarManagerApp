@@ -1,20 +1,25 @@
 'use strict';
 const db = uniCloud.database()
-exports.main = async (event, context) => {
 
-	console.log('event : ', event)
+exports.main = async (event, context) => {
 	const collection = db.collection('car_info')
-	const res = await collection.add({
-		userId:event.userId,
-		enterpriseId:event.enterpriseId,
-		carNumber:event.carNumber,
-		type:event.type, //0 临牌 1 车牌 
-	})
-	console.log("res==="+JSON.stringify(res));
-	//返回数据给客户端
-	return {
-		code:200,
-		status:"success",
-		data:res
+	const data = {
+		userId: event.userId,
+		enterpriseId: event.enterpriseId,
+		carNumber: event.carNumber || '',
+		owner: event.owner || '',
+		ownerphone: event.ownerphone || '',
+		carType: event.carType || event.type || '',
+		brand: event.brand || '',
+		engineNumber: event.engineNumber || '',
+		frame: event.frame || '',
+		insure: event.insure || null,
+		other: event.other || ''
 	}
-};
+	const res = await collection.add(data)
+	return {
+		code: 200,
+		status: 'success',
+		data: res
+	}
+}

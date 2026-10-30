@@ -1,0 +1,7 @@
+{
+  "name": "get_spare_part_logs",
+  "dependencies": {},
+  "extensions": {
+    "uni-cloud-jql": {}
+  }
+}

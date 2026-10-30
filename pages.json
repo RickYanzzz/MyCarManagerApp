@@ -29,6 +29,38 @@
 			}
 		},
 		{
+			"path": "pages/spare_parts/list",
+			"style": {
+				"navigationBarTitleText": "备品备件",
+				"navigationStyle": "custom",
+				"enablePullDownRefresh": false
+			}
+		},
+		{
+			"path": "pages/spare_parts/detail",
+			"style": {
+				"navigationBarTitleText": "备件详情",
+				"navigationStyle": "custom",
+				"enablePullDownRefresh": false
+			}
+		},
+		{
+			"path": "pages/spare_parts/edit",
+			"style": {
+				"navigationBarTitleText": "编辑备件",
+				"navigationStyle": "custom",
+				"enablePullDownRefresh": false
+			}
+		},
+		{
+			"path": "pages/spare_parts/issue",
+			"style": {
+				"navigationBarTitleText": "添加备件",
+				"navigationStyle": "custom",
+				"enablePullDownRefresh": false
+			}
+		},
+		{
 			"path": "pages/forms/forms",
 			"style": {
 				"navigationBarTitleText": "报表"
@@ -98,7 +130,7 @@
 		}, {
 			"path": "pages/car_info/list",
 			"style": {
-				"navigationBarTitleText": "列表"
+				"navigationBarTitleText": "车辆管理"
 			}
 		}, {
 			"path": "pages/car_info/detail",
@@ -121,6 +153,13 @@
 					"animationDuration": 200
 
 				}
+			}
+		},
+		{
+			"path": "pages/analytics/analytics",
+			"style": {
+				"navigationBarTitleText": "经营统计",
+				"enablePullDownRefresh": true
 			}
 		}
 	],

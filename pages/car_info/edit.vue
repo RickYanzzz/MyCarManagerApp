@@ -36,12 +36,7 @@
 </template>
 
 <script>
-	import {
-		validator
-	} from '../../js_sdk/validator/car_info.js';
-
-	const db = uniCloud.database();
-	const dbCollectionName = 'car_info';
+	import { validator } from '../../js_sdk/validator/car_info.js'
 
 	function getValidator(fields) {
 		let result = {}
@@ -53,23 +48,22 @@
 		return result
 	}
 
-
-
 	export default {
 		data() {
-			let formData = {
-				"carNumber": "",
-				"owner": "",
-				"ownerphone": "",
-				"carType": "",
-				"brand": "",
-				"engineNumber": "",
-				"frame": "",
-				"insure": null,
-				"other": ""
+			const formData = {
+				carNumber: '',
+				owner: '',
+				ownerphone: '',
+				carType: '',
+				brand: '',
+				engineNumber: '',
+				frame: '',
+				insure: null,
+				other: ''
 			}
 			return {
-				orderId: "",
+				orderId: '',
+				formDataId: '',
 				formData,
 				formOptions: {},
 				rules: {
@@ -77,71 +71,71 @@
 				}
 			}
 		},
-		onLoad(e) {
-			if (e.id) {
-				const id = e.id
-				this.formDataId = id
-				this.getDetail(id)
-				this.orderId = e.orderId
+		onLoad(options) {
+			if (options.id) {
+				this.formDataId = options.id
+				this.orderId = options.orderId || ''
+				this.getDetail(options.id)
 			}
 		},
 		onReady() {
 			this.$refs.form.setRules(this.rules)
 		},
 		methods: {
-
-			/**
-			 * 验证表单并提交
-			 */
 			submit() {
 				uni.showLoading({
 					mask: true
 				})
 				this.$refs.form.validate().then((res) => {
 					return this.submitForm(res)
-				}).catch(() => {}).finally(() => {
+				}).catch(() => {
+				}).finally(() => {
 					uni.hideLoading()
 				})
 			},
-
-			/**
-			 * 提交表单
-			 */
 			submitForm(value) {
-				// 使用 clientDB 提交数据
-				return db.collection(dbCollectionName).doc(this.formDataId).update(value).then((res) => {
+				return this.$api.update_car_info(Object.assign({
+					_id: this.formDataId
+				}, value)).then(() => {
 					uni.showToast({
 						icon: 'none',
 						title: '修改成功'
 					})
-					this.getOpenerEventChannel().emit('refreshData', this.orderId)
+					if (this.getOpenerEventChannel) {
+						this.getOpenerEventChannel().emit('refreshData', this.orderId)
+					}
 					setTimeout(() => uni.navigateBack(), 500)
 				}).catch((err) => {
 					uni.showModal({
-						content: err.message || '请求服务失败',
+						content: (err && (err.msg || err.errMsg || err.message)) || '请求服务失败',
 						showCancel: false
 					})
 				})
 			},
-
-			/**
-			 * 获取表单数据
-			 * @param {Object} id
-			 */
 			getDetail(id) {
 				uni.showLoading({
 					mask: true
 				})
-				db.collection(dbCollectionName).doc(id).field(
-					"carNumber,owner,ownerphone,carType,brand,engineNumber,frame,insure,other").get().then((res) => {
-					const data = res.result.data[0]
-					if (data) {
-						this.formData = data
-
+				this.$api.get_car_info_byId({
+					carInfoId: id
+				}).then((res) => {
+					const data = res.data || {}
+					if (data && data._id) {
+						this.formData = {
+							carNumber: data.carNumber || '',
+							owner: data.owner || '',
+							ownerphone: data.ownerphone || '',
+							carType: data.carType || '',
+							brand: data.brand || '',
+							engineNumber: data.engineNumber || '',
+							frame: data.frame || '',
+							insure: data.insure || null,
+							other: data.other || ''
+						}
 					}
 				}).catch((err) => {
 					uni.showModal({
-						content: err.message || '请求服务失败',
+						content: (err && (err.msg || err.errMsg || err.message)) || '请求服务失败',
 						showCancel: false
 					})
 				}).finally(() => {
@@ -170,7 +164,6 @@
 	.uni-input-border {
 		padding: 0 10px;
 		height: 35px;
-
 	}
 
 	.uni-textarea-border {
@@ -180,9 +173,7 @@
 
 	.uni-button-group {
 		margin-top: 50px;
-		/* #ifndef APP-NVUE */
 		display: flex;
-		/* #endif */
 		justify-content: center;
 	}
 

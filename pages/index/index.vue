@@ -61,6 +61,10 @@
 						url: "./orderList/orderList?status=2",
 						text: "入账订单"
 					}, {
+						id: 9,
+						icon: 'icon-qiapian',
+						url: "/pages/spare_parts/list",
+						text: "备品备件"},{
 						id: 10,
 						icon: 'icon-xiaofeimingxidan',
 						url: "/pages/analytics/analytics",

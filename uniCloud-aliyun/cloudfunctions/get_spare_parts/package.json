@@ -1,0 +1,7 @@
+{
+  "name": "get_spare_parts",
+  "dependencies": {},
+  "extensions": {
+    "uni-cloud-jql": {}
+  }
+}

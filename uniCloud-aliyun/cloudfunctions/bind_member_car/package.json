@@ -1,0 +1,7 @@
+{
+  "name": "bind_member_car",
+  "dependencies": {},
+  "extensions": {
+    "uni-cloud-jql": {}
+  }
+}

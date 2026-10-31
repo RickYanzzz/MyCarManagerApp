@@ -20,12 +20,10 @@
 		name:"pay-type-view",
 		data() {
 			return {
-				payList: [
-				// 	{
-				// 	value: 0,
-				// 	text: '会员卡'
-				// }, 
-				{
+				payList: [{
+					value: 0,
+					text: '会员卡'
+				}, {
 					value: 1,
 					text: '微信'
 				}, {
@@ -57,7 +55,7 @@
 <style lang="scss">
 	.payTypeView{
 		width: 260px;
-		height: 350px;
+		height: 390px;
 		border-radius: 10px;
 		.header{
 			height: 40px;

@@ -1,0 +1,7 @@
+{
+  "name": "add_member",
+  "dependencies": {},
+  "extensions": {
+    "uni-cloud-jql": {}
+  }
+}

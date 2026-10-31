@@ -1,0 +1,84 @@
+{
+	"bsonType": "object",
+	"required": ["enterpriseId", "memberId", "type", "amount", "idempotencyKey", "time"],
+	"permission": {
+		"read": false,
+		"create": false,
+		"update": false,
+		"delete": false
+	},
+	"properties": {
+		"_id": {
+			"description": "ID，系统自动生成"
+		},
+		"enterpriseId": {
+			"title": "企业ID",
+			"bsonType": "string",
+			"foreignKey": "enterprise._id",
+			"description": "所属企业"
+		},
+		"memberId": {
+			"title": "会员ID",
+			"bsonType": "string",
+			"foreignKey": "member._id",
+			"description": "会员ID"
+		},
+		"type": {
+			"title": "流水类型",
+			"bsonType": "string",
+			"description": "recharge / consume / refund / adjust"
+		},
+		"amount": {
+			"title": "变动金额",
+			"bsonType": "int",
+			"description": "正数，方向由 type 决定，单位元"
+		},
+		"balanceBefore": {
+			"title": "变动前余额",
+			"bsonType": "int",
+			"description": "变动前余额，单位元"
+		},
+		"balanceAfter": {
+			"title": "变动后余额",
+			"bsonType": "int",
+			"description": "变动后余额，单位元"
+		},
+		"payType": {
+			"title": "支付方式",
+			"bsonType": "int",
+			"description": "充值收款方式或消费支付方式"
+		},
+		"orderId": {
+			"title": "订单ID",
+			"bsonType": "string",
+			"foreignKey": "order._id",
+			"description": "消费关联订单"
+		},
+		"carId": {
+			"title": "车辆ID",
+			"bsonType": "string",
+			"foreignKey": "car_info._id",
+			"description": "消费关联车辆"
+		},
+		"operatorUserId": {
+			"title": "操作员工ID",
+			"bsonType": "string",
+			"foreignKey": "user._id",
+			"description": "操作员工"
+		},
+		"remark": {
+			"title": "备注",
+			"bsonType": "string",
+			"description": "备注信息"
+		},
+		"idempotencyKey": {
+			"title": "幂等键",
+			"bsonType": "string",
+			"description": "防止重复充值或扣款"
+		},
+		"time": {
+			"title": "发生时间",
+			"bsonType": "timestamp"
+		}
+	}
+}

@@ -4,7 +4,7 @@
 			<text>修改消费项目</text>
 		</view>
 		<view class="formView">
-			<uni-section title="订单未绑定会员">
+			<uni-section title="修改消费项目">
 				<uni-forms :modelValue="formData">
 					<uni-forms-item label-width="40" label="名称" name="value">
 						<uni-easyinput type="input" disabled="true" v-model="formData.name" placeholder="名称" />

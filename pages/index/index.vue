@@ -64,33 +64,28 @@
 						id: 9,
 						icon: 'icon-qiapian',
 						url: "/pages/spare_parts/list",
-						text: "备品备件"},{
+						text: "备品备件"
+					}, {
 						id: 10,
 						icon: 'icon-xiaofeimingxidan',
 						url: "/pages/analytics/analytics",
 						text: "经营统计"
+					}, {
+						id: 5,
+						icon: 'icon-huiyuanchaxun',
+						url: "/pages/member/list",
+						text: "客户快查"
+					}, {
+						id: 6,
+						icon: 'icon-huiyuan',
+						url: "/pages/member/add",
+						text: "会员开卡"
+					}, {
+						id: 7,
+						icon: 'icon-huiyuanchongzhi',
+						url: "/pages/member/list?action=recharge",
+						text: "会员充值"
 					}
-					// , {
-					// 	id: 5,
-					// 	icon: 'icon-huiyuanchaxun',
-					// 	url: "./orderList/orderList",
-					// 	text: "客户快查"
-					// }, {
-					// 	id: 6,
-					// 	icon: 'icon-huiyuan',
-					// 	url: "pages/index/orderList/orderList",
-					// 	text: "会员开卡"
-					// }, {
-					// 	id: 7,
-					// 	icon: 'icon-huiyuanchongzhi',
-					// 	url: "pages/index/billing/billingDetail/billingDetail",
-					// 	text: "会员充值"
-					// }, {
-					// 	id: 8,
-					// 	icon: 'icon-baoxian1',
-					// 	url: "pages/index/billing/billingDetail/billingDetail",
-					// 	text: "保险到期"
-					// },
 				]
 			}
 		},

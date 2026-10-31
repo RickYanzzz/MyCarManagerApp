@@ -2,7 +2,8 @@
 	<view style="position: relative;">
 		<nav-header type="orderDetail" :title="headerTitle"></nav-header>
 		<uni-section>
-			<header-card  @clickHeaderCard="clickHeaderCard" :carInfo="carInfo"></header-card>
+			<header-card @clickHeaderCard="clickHeaderCard" @bindMember="openMemberBind"
+				@openMember="openMemberDetail" :carInfo="carInfo" :member="member"></header-card>
 		</uni-section>
 		<view style="padding-bottom: 80px;">
 			<view class="select_tab" v-show="order.status!=2">
@@ -127,6 +128,7 @@
 				],
 				carInfo: {},
 				order: {},
+				member: {},
 				hotGoods: [],
 				PurchasedGoods: [],
 				PurchaseingGoods: [],
@@ -266,6 +268,7 @@
 						uni.hideLoading()
 						console.log("res1===", JSON.stringify(res1));
 						that.carInfo = res1.data
+						that.loadMember()
 						that.getPurchasedGoods(0)
 						that.getPurchasedGoods(1)
 						that.getPayInfo()
@@ -378,13 +381,23 @@
 
 			},
 			clickPayTypeView(item) {
+				if (item.value === 0 && !this.member._id) {
+					this.isPopupShow = false
+					this.isShowpPayType = false
+					this.openMemberBind()
+					return
+				}
 				this.formData.value = item.value
-				var totalFee = 0
-				this.PurchaseingGoods.forEach(res => {
-					totalFee += res.fee
-				})
-				this.formData.fee = totalFee
-				this.$refs.payviewRef.loadData(this.formData)
+				if (item.value === 0) {
+					this.formData.fee = this.owefee > 0 ? this.owefee : 0
+				} else {
+					var totalFee = 0
+					this.PurchaseingGoods.forEach(res => {
+						totalFee += res.fee
+					})
+					this.formData.fee = totalFee
+				}
+				this.$refs.payviewRef.loadData(this.formData, this.member, this.owefee)
 				this.isPopupShow = true
 				this.isShowpPayType = false
 				this.isShowpPayView = true
@@ -394,24 +407,71 @@
 				uni.showLoading({
 					title: "添加中..."
 				})
-				that.$api.add_pay_info({
-					"name": item.text,
-					"type": item.value,
-					"fee": item.fee,
-					"userId": this.$store.state.userId,
-					"enterpriseId": this.$store.state.enterpriseId,
-					"orderId": this.order._id,
-					"carId": this.carInfo._id
-				}).then(res => {
+				const request = item.value === 0
+					? that.$api.consume_member_balance({
+						"memberId": this.member._id,
+						"orderId": this.order._id,
+						"carId": this.carInfo._id,
+						"amount": item.fee,
+						"idempotencyKey": this.$commons.uuid()
+					})
+					: that.$api.add_pay_info({
+						"name": item.text,
+						"type": item.value,
+						"fee": item.fee,
+						"userId": this.$store.state.userId,
+						"enterpriseId": this.$store.state.enterpriseId,
+						"orderId": this.order._id,
+						"carId": this.carInfo._id
+					})
+				request.then(res => {
 					uni.hideLoading()
 					this.isPopupShow = false
-					that.getPayInfo()
+					that.loadData(that.order._id)
 				}).catch(err => {
 					uni.hideLoading()
 					uni.showToast({
-						icon: "error",
-						title: "网络异常，请稍后重试～"
+						icon: "none",
+						title: (err && (err.message || err.msg || err.errMsg)) || "网络异常，请稍后重试～"
 					})
+				})
+			},
+			loadMember() {
+				const memberId = this.order.memberId || this.carInfo.memberId
+				if (!memberId) {
+					this.member = {}
+					return
+				}
+				this.$api.get_member({
+					memberId
+				}).then(res => {
+					this.member = res.data || {}
+				}).catch(err => {
+					this.member = {}
+				})
+			},
+			openMemberBind() {
+				if (!this.carInfo._id) return
+				const that = this
+				uni.navigateTo({
+					url: '/pages/member/list?mode=bind&carId=' + this.carInfo._id +
+						'&orderId=' + this.order._id +
+						'&carNumber=' + encodeURIComponent(this.carInfo.carNumber || ''),
+					events: {
+						memberBound: () => {
+							that.loadData(that.order._id)
+						}
+					}
+				})
+			},
+			openMemberDetail() {
+				const memberId = (this.member && this.member._id) || this.carInfo.memberId
+				if (!memberId) {
+					this.openMemberBind()
+					return
+				}
+				uni.navigateTo({
+					url: '/pages/member/detail?id=' + memberId
 				})
 			},
 			getPayInfo() {

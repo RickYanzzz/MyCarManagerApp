@@ -58,17 +58,17 @@
 				}, {
 					id: 5,
 					icon: 'icon-huiyuanchaxun',
-					url: "./orderList/orderList",
+					url: "/pages/member/list",
 					text: "客户快查"
 				}, {
 					id: 6,
 					icon: 'icon-huiyuan',
-					url: "pages/index/orderList/orderList",
+					url: "/pages/member/add",
 					text: "会员开卡"
 				}, {
 					id: 7,
 					icon: 'icon-huiyuanchongzhi',
-					url: "pages/index/billing/billingDetail/billingDetail",
+					url: "/pages/member/list?action=recharge",
 					text: "会员充值"
 				}, {
 					id: 8,

@@ -6,29 +6,37 @@
 		</p>
 		<p class="h-p2">{{carInfo.carNumber}}</p>
 
-		<p v-show="carInfo.memberId" class="h-p4"><span>王</span><span class="midline">|</span><span>{{ownerphone}}</span>
-		</p>
-		<p v-show="carInfo.memberId" class="h-p3 mtop"><text>车衣参加8000送一次达打蜡</text></p>
-		<p class="h-line"></p>
-		<p v-show="carInfo.memberId" class="hp6 h-p1 mtop">
-			<view>
-				<text class="iconfont icon-qiapian"></text>
-				<text style="margin-left: 3px;">P0001</text>
-			</view>
-			<view>
-				<text class="iconfont icon-huiyuan1"></text>
-				<text style="margin-left: 3px;">王志林</text>
-			</view>
-			<view>
-				<text class="iconfont icon-qian"></text>
-				<text style="margin-left: 3px;">12017</text>
-			</view>
-		</p>
-		<p v-show="!carInfo.memberId" class="hp6 h-p1 mtop">
-			<view>
-				<text>尚未绑定会员，请点击绑定</text>
-			</view>
-		</p>
+		<template v-if="isMemberBound">
+			<p class="h-p4" @click.stop="openMember">
+				<span>{{ memberName }}</span><span class="midline">|</span><span>{{ memberPhone }}</span>
+			</p>
+			<p class="h-p3 mtop" @click.stop="openMember">
+				<text>{{ memberLevel }}</text>
+			</p>
+			<p class="h-line"></p>
+			<p class="hp6 h-p1 mtop" @click.stop="openMember">
+				<view>
+					<text class="iconfont icon-qiapian"></text>
+					<text style="margin-left: 3px;">{{ memberCardNo || '-' }}</text>
+				</view>
+				<view>
+					<text class="iconfont icon-huiyuan1"></text>
+					<text style="margin-left: 3px;">{{ memberName }}</text>
+				</view>
+				<view>
+					<text class="iconfont icon-qian"></text>
+					<text style="margin-left: 3px;">{{ memberBalance }}</text>
+				</view>
+			</p>
+		</template>
+		<template v-else>
+			<p class="h-line"></p>
+			<p class="hp6 h-p1 mtop" @click.stop="bindMember">
+				<view>
+					<text>尚未绑定会员，请点击绑定</text>
+				</view>
+			</p>
+		</template>
 	</view>
 </template>
 
@@ -44,12 +52,41 @@
 			carInfo: {
 				type: Object,
 				required: true
+			},
+			member: {
+				type: Object,
+				default: () => ({})
+			}
+		},
+		computed: {
+			isMemberBound() {
+				return !!(this.member && (this.member._id || this.carInfo.memberId))
+			},
+			memberName() {
+				return this.member.name || this.carInfo.memberName || this.carInfo.owner || ''
+			},
+			memberPhone() {
+				return this.member.phone || this.carInfo.ownerphone || ''
+			},
+			memberCardNo() {
+				return this.member.cardNo || this.carInfo.memberCardNo || ''
+			},
+			memberBalance() {
+				return this.member.balance !== undefined ? this.member.balance : (this.carInfo.memberBalance || 0)
+			},
+			memberLevel() {
+				return this.member.level || (this.member._id || this.carInfo.memberId ? '会员' : '')
 			}
 		},
 		methods: {
 			clickToDetail() {
-			
 				this.$emit("clickHeaderCard")
+			},
+			openMember() {
+				this.$emit("openMember", this.member)
+			},
+			bindMember() {
+				this.$emit("bindMember")
 			}
 		}
 	}

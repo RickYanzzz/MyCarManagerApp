@@ -81,8 +81,28 @@ function seedDb() {
 			receipt: '示范汽车服务中心',
 			phone: '13800000000'
 		}],
+		member: [{
+			_id: 'member_demo_001',
+			enterpriseId: 'ent_demo_0001',
+			cardNo: 'M202610310001',
+			name: '王志林',
+			phone: '13800001234',
+			level: '金卡会员',
+			balance: 1200,
+			totalRecharge: 2000,
+			totalConsume: 800,
+			status: 1,
+			remark: '演示会员',
+			creatorUserId: 'user_demo_0001',
+			createTime: ts(30),
+			updateTime: ts(0)
+		}],
+		member_transactions: [
+			{ _id: 'mt_demo_001', enterpriseId: 'ent_demo_0001', memberId: 'member_demo_001', type: 'recharge', amount: 2000, balanceBefore: 0, balanceAfter: 2000, payType: 1, operatorUserId: 'user_demo_0001', remark: '开卡充值', idempotencyKey: 'demo-recharge-001', time: ts(30) },
+			{ _id: 'mt_demo_002', enterpriseId: 'ent_demo_0001', memberId: 'member_demo_001', type: 'consume', amount: 800, balanceBefore: 2000, balanceAfter: 1200, payType: 0, orderId: 'order_demo_004', carId: 'car_demo_001', operatorUserId: 'user_demo_0001', remark: '会员卡消费', idempotencyKey: 'demo-consume-001', time: ts(2) }
+		],
 		car_info: [
-			{ _id: 'car_demo_001', userId: 'user_demo_0001', enterpriseId: 'ent_demo_0001', carNumber: '粤A12345', owner: '李雷', ownerphone: '13800001111', carType: '0', brand: '丰田', engineNumber: 'EN001', frame: 'FRAME001', insure: ts(-120), other: '' },
+			{ _id: 'car_demo_001', userId: 'user_demo_0001', enterpriseId: 'ent_demo_0001', memberId: 'member_demo_001', carNumber: '粤A12345', owner: '李雷', ownerphone: '13800001111', carType: '0', brand: '丰田', engineNumber: 'EN001', frame: 'FRAME001', insure: ts(-120), other: '' },
 			{ _id: 'car_demo_002', userId: 'user_demo_0001', enterpriseId: 'ent_demo_0001', carNumber: '粤B88888', owner: '韩梅梅', ownerphone: '13800002222', carType: '1', brand: '本田', engineNumber: 'EN002', frame: 'FRAME002', insure: ts(-80), other: '' },
 			{ _id: 'car_demo_003', userId: 'user_demo_0001', enterpriseId: 'ent_demo_0001', carNumber: '临牌', owner: '王强', ownerphone: '13800003333', carType: '2', brand: '大众', engineNumber: '', frame: '', insure: null, other: '' }
 		],

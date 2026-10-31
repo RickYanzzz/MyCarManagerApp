@@ -643,6 +643,278 @@ function get_spare_part_logs(data) {
 	return ok(clone(list))
 }
 
+/* ---------------- 会员 ---------------- */
+
+function memberTxId(enterpriseId, key) {
+	return 'mt_' + enterpriseId + '_' + String(key).replace(/[^a-zA-Z0-9_-]/g, '')
+}
+
+function memberWithCars(db, member) {
+	return Object.assign({}, member, {
+		cars: db.car_info.filter(car => car.enterpriseId === member.enterpriseId && car.memberId === member._id)
+	})
+}
+
+function add_member(data) {
+	const db = loadDb()
+	const enterpriseId = data.enterpriseId || currentEnterpriseId(db)
+	const name = String(data.name || '').trim()
+	const phone = String(data.phone || '').trim()
+	if (!name || !phone) return fail('姓名和手机号不能为空')
+	if (db.member.some(item => item.enterpriseId === enterpriseId && item.phone === phone)) {
+		return fail('该手机号已开卡')
+	}
+	let cardNo = String(data.cardNo || '').trim()
+	if (cardNo && db.member.some(item => item.enterpriseId === enterpriseId && item.cardNo === cardNo)) {
+		return fail('卡号已存在')
+	}
+	if (!cardNo) cardNo = 'M' + Date.now()
+	const user = currentUser(db)
+	const member = {
+		_id: makeId('member'),
+		enterpriseId: enterpriseId,
+		cardNo,
+		name,
+		phone,
+		level: String(data.level || '普通会员').trim() || '普通会员',
+		balance: 0,
+		totalRecharge: 0,
+		totalConsume: 0,
+		status: 1,
+		remark: String(data.remark || '').trim(),
+		creatorUserId: user._id || 'user_demo_0001',
+		createTime: now(),
+		updateTime: now()
+	}
+	db.member.push(member)
+	saveDb(db)
+	return ok(clone(member))
+}
+
+function get_member(data) {
+	const db = loadDb()
+	const enterpriseId = data.enterpriseId || currentEnterpriseId(db)
+	let member = null
+	if (data.memberId) {
+		member = findById(db.member, data.memberId)
+	} else if (data.phone) {
+		member = db.member.find(item => item.enterpriseId === enterpriseId && item.phone === String(data.phone).trim())
+	} else if (data.cardNo) {
+		member = db.member.find(item => item.enterpriseId === enterpriseId && item.cardNo === String(data.cardNo).trim())
+	} else if (data.carNumber) {
+		const car = db.car_info.find(item => item.enterpriseId === enterpriseId && item.carNumber === String(data.carNumber).trim())
+		if (car && car.memberId) member = findById(db.member, car.memberId)
+	}
+	if (!member || member.enterpriseId !== enterpriseId) return fail('会员不存在')
+	return ok(clone(memberWithCars(db, member)))
+}
+
+function list_members(data) {
+	const db = loadDb()
+	const enterpriseId = data.enterpriseId || currentEnterpriseId(db)
+	const keyword = String(data.keyword || '').trim().toLowerCase()
+	const page = Math.max(1, parseInt(data.page) || 1)
+	const pageSize = Math.min(100, Math.max(1, parseInt(data.pageSize) || 20))
+	let list = db.member.filter(item => item.enterpriseId === enterpriseId)
+	if (keyword) {
+		list = list.filter(item => {
+			const text = [item.name, item.phone, item.cardNo].join(' ').toLowerCase()
+			return text.indexOf(keyword) > -1
+		})
+	}
+	list = list.slice().sort((a, b) => Number(b.createTime || 0) - Number(a.createTime || 0))
+	const total = list.length
+	const start = (page - 1) * pageSize
+	return ok({
+		list: clone(list.slice(start, start + pageSize)),
+		total,
+		page,
+		pageSize
+	})
+}
+
+function update_member(data) {
+	const db = loadDb()
+	const enterpriseId = data.enterpriseId || currentEnterpriseId(db)
+	const member = findById(db.member, data.memberId)
+	if (!member || member.enterpriseId !== enterpriseId) return fail('会员不存在')
+	if (data.name !== undefined) {
+		const name = String(data.name || '').trim()
+		if (!name) return fail('姓名不能为空')
+		member.name = name
+	}
+	if (data.phone !== undefined) {
+		const phone = String(data.phone || '').trim()
+		if (!phone) return fail('手机号不能为空')
+		const dup = db.member.some(item => item.enterpriseId === enterpriseId && item._id !== member._id && item.phone === phone)
+		if (dup) return fail('该手机号已被其他会员使用')
+		member.phone = phone
+	}
+	if (data.level !== undefined) member.level = String(data.level || '普通会员').trim() || '普通会员'
+	if (data.remark !== undefined) member.remark = String(data.remark || '').trim()
+	member.updateTime = now()
+	saveDb(db)
+	return ok(clone(member))
+}
+
+function set_member_status(data) {
+	const db = loadDb()
+	const enterpriseId = data.enterpriseId || currentEnterpriseId(db)
+	const member = findById(db.member, data.memberId)
+	if (!member || member.enterpriseId !== enterpriseId) return fail('会员不存在')
+	const status = toInt(data.status, -1)
+	if (status !== 0 && status !== 1) return fail('状态必须为 0 或 1')
+	member.status = status
+	member.updateTime = now()
+	saveDb(db)
+	return ok({ _id: member._id, status })
+}
+
+function bind_member_car(data) {
+	const db = loadDb()
+	const enterpriseId = data.enterpriseId || currentEnterpriseId(db)
+	let car = null
+	if (data.carId) {
+		car = findById(db.car_info, data.carId)
+	} else if (data.carNumber) {
+		car = db.car_info.find(item => item.enterpriseId === enterpriseId && item.carNumber === String(data.carNumber).trim())
+	}
+	if (!car || car.enterpriseId !== enterpriseId) return fail('车辆不存在')
+	let member = null
+	if (data.memberId) {
+		member = findById(db.member, data.memberId)
+		if (!member || member.enterpriseId !== enterpriseId) return fail('会员不存在')
+	}
+	car.memberId = data.memberId || ''
+	if (data.orderId) {
+		const order = findById(db.order, data.orderId)
+		if (!order || order.enterpriseId !== enterpriseId) return fail('订单不存在')
+		order.memberId = data.memberId || ''
+	}
+	saveDb(db)
+	return ok({ car: clone(car), member: member ? clone(member) : null })
+}
+
+function recharge_member(data) {
+	const db = loadDb()
+	const enterpriseId = data.enterpriseId || currentEnterpriseId(db)
+	const member = findById(db.member, data.memberId)
+	if (!member || member.enterpriseId !== enterpriseId) return fail('会员不存在')
+	if (member.status !== 1) return fail('会员已禁用')
+	const amount = toInt(data.amount, 0)
+	if (amount <= 0) return fail('充值金额必须是正整数')
+	const key = String(data.idempotencyKey || '').trim()
+	if (!key) return fail('缺少幂等键')
+	const txId = memberTxId(enterpriseId, key)
+	const existing = findById(db.member_transactions, txId)
+	if (existing) return ok({ duplicated: true, transactionId: txId, balance: member.balance })
+	const before = Number(member.balance || 0)
+	const after = before + amount
+	member.balance = after
+	member.totalRecharge = Number(member.totalRecharge || 0) + amount
+	member.updateTime = now()
+	db.member_transactions.push({
+		_id: txId,
+		enterpriseId,
+		memberId: member._id,
+		type: 'recharge',
+		amount,
+		balanceBefore: before,
+		balanceAfter: after,
+		payType: toInt(data.payType, 0),
+		operatorUserId: (currentUser(db)._id || ''),
+		remark: String(data.remark || '').trim(),
+		idempotencyKey: key,
+		time: now()
+	})
+	saveDb(db)
+	return ok({ balance: after, transactionId: txId })
+}
+
+function consume_member_balance(data) {
+	const db = loadDb()
+	const enterpriseId = data.enterpriseId || currentEnterpriseId(db)
+	const member = findById(db.member, data.memberId)
+	if (!member || member.enterpriseId !== enterpriseId) return fail('会员不存在')
+	if (member.status !== 1) return fail('会员已禁用')
+	const amount = toInt(data.amount, 0)
+	if (amount <= 0) return fail('支付金额必须是正整数')
+	const key = String(data.idempotencyKey || '').trim()
+	if (!key) return fail('缺少幂等键')
+	const txId = memberTxId(enterpriseId, key)
+	const existing = findById(db.member_transactions, txId)
+	if (existing) return ok({ duplicated: true, transactionId: txId, balance: member.balance })
+	const order = findById(db.order, data.orderId)
+	if (!order || order.enterpriseId !== enterpriseId) return fail('订单不存在')
+	if (toInt(order.status, 0) === 2) return fail('订单已入账')
+	if (order.memberId && order.memberId !== member._id) return fail('订单已绑定其他会员')
+	const totalFee = db.purchased_goods
+		.filter(item => item.enterpriseId === enterpriseId && item.orderId === order._id)
+		.reduce((total, item) => total + toInt(item.fee, 0), 0)
+	const payFee = db.pay_infos
+		.filter(item => item.enterpriseId === enterpriseId && item.orderId === order._id)
+		.reduce((total, item) => total + toInt(item.fee, 0), 0)
+	const oweFee = totalFee - payFee
+	if (oweFee <= 0) return fail('订单已无未付金额')
+	if (amount > oweFee) return fail('支付金额超过未付金额')
+	if (Number(member.balance || 0) < amount) return fail('会员余额不足')
+	const before = Number(member.balance || 0)
+	const after = before - amount
+	member.balance = after
+	member.totalConsume = Number(member.totalConsume || 0) + amount
+	member.updateTime = now()
+	const carId = data.carId || order.carInfoId || ''
+	const user = currentUser(db)
+	db.member_transactions.push({
+		_id: txId,
+		enterpriseId,
+		memberId: member._id,
+		type: 'consume',
+		amount,
+		balanceBefore: before,
+		balanceAfter: after,
+		payType: 0,
+		orderId: order._id,
+		carId,
+		operatorUserId: user._id || '',
+		remark: String(data.remark || '').trim(),
+		idempotencyKey: key,
+		time: now()
+	})
+	db.pay_infos.push({
+		_id: makeId('pay'),
+		userId: user._id || '',
+		enterpriseId,
+		memberId: member._id,
+		name: '会员卡',
+		type: 0,
+		fee: amount,
+		orderId: order._id,
+		carId
+	})
+	if (!order.memberId) order.memberId = member._id
+	saveDb(db)
+	return ok({ balance: after, transactionId: txId })
+}
+
+function get_member_transactions(data) {
+	const db = loadDb()
+	const enterpriseId = data.enterpriseId || currentEnterpriseId(db)
+	const memberId = String(data.memberId || '')
+	const page = Math.max(1, parseInt(data.page) || 1)
+	const pageSize = Math.min(100, Math.max(1, parseInt(data.pageSize) || 20))
+	let list = db.member_transactions.filter(item => item.enterpriseId === enterpriseId && item.memberId === memberId)
+	list = list.slice().sort((a, b) => Number(b.time || 0) - Number(a.time || 0))
+	const total = list.length
+	const start = (page - 1) * pageSize
+	return ok({
+		list: clone(list.slice(start, start + pageSize)),
+		total,
+		page,
+		pageSize
+	})
+}
+
 /* ---------------- 调试辅助 ---------------- */
 
 function resetMockData() {
@@ -685,5 +957,14 @@ export default {
 	return_spare_part,
 	adjust_spare_part_stock,
 	get_spare_part_logs,
+	add_member,
+	get_member,
+	list_members,
+	update_member,
+	set_member_status,
+	bind_member_car,
+	recharge_member,
+	consume_member_balance,
+	get_member_transactions,
 	resetMockData
 }

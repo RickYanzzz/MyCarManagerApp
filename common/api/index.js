@@ -6,6 +6,17 @@ import { get_purchased_goods, add_purchased_goods, delete_purchased_goods, updat
 import { add_pay_info, get_pay_info, delete_pay_info } from "./pay_info.js"
 import { ocrLicensePlate } from "./image_ocr.js"
 import {
+	add_member,
+	get_member,
+	list_members,
+	update_member,
+	set_member_status,
+	bind_member_car,
+	recharge_member,
+	consume_member_balance,
+	get_member_transactions
+} from "./member.js"
+import {
 	get_spare_parts,
 	get_spare_part_by_id,
 	add_spare_part,
@@ -73,7 +84,16 @@ const realApi = {
 	issue_spare_parts,
 	return_spare_part,
 	adjust_spare_part_stock,
-	get_spare_part_logs
+	get_spare_part_logs,
+	add_member,
+	get_member,
+	list_members,
+	update_member,
+	set_member_status,
+	bind_member_car,
+	recharge_member,
+	consume_member_balance,
+	get_member_transactions
 }
 
 // 默认走真实 uniCloud API；本地无云调试时才在 common/mock/config.js 打开 mock。

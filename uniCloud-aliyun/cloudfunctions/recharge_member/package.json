@@ -1,0 +1,7 @@
+{
+  "name": "recharge_member",
+  "dependencies": {},
+  "extensions": {
+    "uni-cloud-jql": {}
+  }
+}

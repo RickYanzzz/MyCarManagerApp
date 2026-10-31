@@ -1,0 +1,7 @@
+{
+  "name": "consume_member_balance",
+  "dependencies": {},
+  "extensions": {
+    "uni-cloud-jql": {}
+  }
+}

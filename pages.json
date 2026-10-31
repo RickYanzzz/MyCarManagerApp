@@ -61,6 +61,41 @@
 			}
 		},
 		{
+			"path": "pages/member/list",
+			"style": {
+				"navigationBarTitleText": "会员列表",
+				"enablePullDownRefresh": false
+			}
+		},
+		{
+			"path": "pages/member/add",
+			"style": {
+				"navigationBarTitleText": "会员开卡",
+				"enablePullDownRefresh": false
+			}
+		},
+		{
+			"path": "pages/member/detail",
+			"style": {
+				"navigationBarTitleText": "会员详情",
+				"enablePullDownRefresh": false
+			}
+		},
+		{
+			"path": "pages/member/recharge",
+			"style": {
+				"navigationBarTitleText": "会员充值",
+				"enablePullDownRefresh": false
+			}
+		},
+		{
+			"path": "pages/member/transactions",
+			"style": {
+				"navigationBarTitleText": "会员流水",
+				"enablePullDownRefresh": false
+			}
+		},
+		{
 			"path": "pages/forms/forms",
 			"style": {
 				"navigationBarTitleText": "报表"

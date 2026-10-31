@@ -57,6 +57,12 @@
   "purchased_goods": {
     "data": []
   },
+  "member": {
+    "data": []
+  },
+  "member_transactions": {
+    "data": []
+  },
   "todays_income": {
     "data": []
   },

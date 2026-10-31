@@ -1,0 +1,80 @@
+{
+	"bsonType": "object",
+	"required": ["name", "phone", "enterpriseId", "cardNo"],
+	"permission": {
+		"read": false,
+		"create": false,
+		"update": false,
+		"delete": false
+	},
+	"properties": {
+		"_id": {
+			"description": "ID，系统自动生成"
+		},
+		"enterpriseId": {
+			"title": "企业ID",
+			"bsonType": "string",
+			"foreignKey": "enterprise._id",
+			"description": "会员所属企业"
+		},
+		"cardNo": {
+			"title": "会员卡号",
+			"bsonType": "string",
+			"description": "企业内唯一卡号"
+		},
+		"name": {
+			"title": "会员姓名",
+			"bsonType": "string",
+			"description": "会员姓名"
+		},
+		"phone": {
+			"title": "手机号",
+			"bsonType": "string",
+			"description": "会员手机号"
+		},
+		"level": {
+			"title": "会员等级",
+			"bsonType": "string",
+			"description": "默认为普通会员"
+		},
+		"balance": {
+			"title": "会员余额",
+			"bsonType": "int",
+			"description": "当前可用余额，单位元"
+		},
+		"totalRecharge": {
+			"title": "累计充值",
+			"bsonType": "int",
+			"description": "累计充值金额，单位元"
+		},
+		"totalConsume": {
+			"title": "累计消费",
+			"bsonType": "int",
+			"description": "累计消费金额，单位元"
+		},
+		"status": {
+			"title": "状态",
+			"bsonType": "int",
+			"description": "1 正常，0 禁用"
+		},
+		"remark": {
+			"title": "备注",
+			"bsonType": "string",
+			"description": "备注信息"
+		},
+		"creatorUserId": {
+			"title": "开卡员工ID",
+			"bsonType": "string",
+			"foreignKey": "user._id",
+			"description": "开卡员工"
+		},
+		"createTime": {
+			"title": "创建时间",
+			"bsonType": "timestamp"
+		},
+		"updateTime": {
+			"title": "更新时间",
+			"bsonType": "timestamp"
+		}
+	}
+}

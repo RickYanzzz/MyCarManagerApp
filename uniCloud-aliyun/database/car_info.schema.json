@@ -23,6 +23,12 @@
 			"bsonType": "string",
 			"description": "企业ID"
 		},
+		"memberId": {
+			"title": "会员ID",
+			"foreignKey": "member._id",
+			"bsonType": "string",
+			"description": "绑定会员ID，为空表示未绑定"
+		},
 		"carNumber": {
 			"title": "车牌号",
 			"bsonType": "string",

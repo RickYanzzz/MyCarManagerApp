@@ -40,6 +40,14 @@ import {
 import mockApi from "../mock/api.js"
 import { USE_MOCK } from "../mock/config.js"
 import {
+	followup_scan,
+	followup_generate,
+	followup_list,
+	followup_mark,
+	followup_debug
+} from "./followup.js"
+import { add_member_card, get_member_cards } from "./memberCard.js"
+import {
 	get_analytics_summary,
 	analytics_test_data,
 	seed_analytics_test_data,
@@ -103,6 +111,13 @@ const realApi = {
 	recharge_member,
 	consume_member_balance,
 	get_member_transactions,
+	followup_scan,
+	followup_generate,
+	followup_list,
+	followup_mark,
+	followup_debug,
+	add_member_card,
+	get_member_cards,
 	get_appointment_board,
 	get_appointment_detail,
 	get_appointment_by_member,

@@ -1,0 +1,10 @@
+{
+	"name": "followup_generate",
+	"dependencies": {},
+	"extensions": {
+		"uni-cloud-jql": {}
+	},
+	"cloudfunction-config": {
+		"timeout": 30
+	}
+}

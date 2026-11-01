@@ -1,0 +1,10 @@
+{
+	"name": "followup_debug",
+	"dependencies": {},
+	"extensions": {
+		"uni-cloud-jql": {}
+	},
+	"cloudfunction-config": {
+		"timeout": 60
+	}
+}

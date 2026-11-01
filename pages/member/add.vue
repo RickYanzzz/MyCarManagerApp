@@ -17,6 +17,16 @@
 				<text class="form-label">会员等级</text>
 				<uni-data-select v-model="form.level" :localdata="levels" :clear="false"></uni-data-select>
 			</view>
+			<view class="form-row">
+				<text class="form-label">性别</text>
+				<uni-data-select v-model="form.gender" :localdata="genders" :clear="false"></uni-data-select>
+			</view>
+			<view class="form-row">
+				<text class="form-label">生日（选填，用于生日关怀提醒）</text>
+				<picker mode="date" :value="form.birthday" @change="onBirthdayChange">
+					<view class="birthday-value">{{ form.birthday || '点击选择生日' }}</view>
+				</picker>
+			</view>
 			<view class="form-row form-row-textarea">
 				<text class="form-label">备注</text>
 				<uni-easyinput v-model="form.remark" type="textarea" placeholder="选填"></uni-easyinput>
@@ -53,11 +63,23 @@
 					value: '金卡会员',
 					text: '金卡会员'
 				}],
+				genders: [{
+					value: 0,
+					text: '不填'
+				}, {
+					value: 1,
+					text: '男'
+				}, {
+					value: 2,
+					text: '女'
+				}],
 				form: {
 					name: '',
 					phone: '',
 					cardNo: '',
 					level: '普通会员',
+					gender: 0,
+					birthday: '',
 					remark: ''
 				}
 			}
@@ -210,6 +232,12 @@
 		font-size: 13px;
 		color: #666666;
 		margin-bottom: 8px;
+	}
+
+	.birthday-value {
+		padding: 4px 0;
+		font-size: 14px;
+		color: #333333;
 	}
 
 	.bind-hint {

@@ -78,6 +78,9 @@
 
 <script>
 	import sPopup from '@/components/s-popup';
+	import {
+		matchCycleByName
+	} from '@/common/js/cycle-presets.js';
 	export default {
 		data() {
 			return {
@@ -358,14 +361,22 @@
 			},
 			clickTagPageItem(item) {
 				const that = this
-				this.$api.add_purchased_goods({
+				const payload = {
 					"name": item.name,
 					"fee": item.fee,
 					"count": 1,
 					"orderId": that.order._id,
 					"carId": that.carInfo._id,
 					"status": 0
-				}).then(res => {
+				}
+				// 按周期标准匹配分类与建议周期，作为快照写入（用于下次保养提醒）
+				const cycle = matchCycleByName(payload.name)
+				if (cycle) {
+					payload.category = cycle.category
+					payload.cycleDays = cycle.cycleDays
+					payload.cycleName = cycle.cycleName
+				}
+				this.$api.add_purchased_goods(payload).then(res => {
 					this.getPurchasedGoods(0)
 				}).catch(err => {
 

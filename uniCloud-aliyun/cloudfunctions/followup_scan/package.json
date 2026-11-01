@@ -1,0 +1,17 @@
+{
+	"name": "followup_scan",
+	"dependencies": {},
+	"extensions": {
+		"uni-cloud-jql": {}
+	},
+	"cloudfunction-config": {
+		"timeout": 60,
+		"triggers": [
+			{
+				"name": "followupDailyScan",
+				"type": "timer",
+				"config": "0 0 8 * * * *"
+			}
+		]
+	}
+}

@@ -1,0 +1,97 @@
+{
+	"bsonType": "object",
+	"required": ["enterpriseId", "memberId", "cardName"],
+	"permission": {
+		"read": false,
+		"create": false,
+		"update": false,
+		"delete": false
+	},
+	"properties": {
+		"_id": {
+			"description": "ID，系统自动生成"
+		},
+		"enterpriseId": {
+			"title": "企业ID",
+			"bsonType": "string",
+			"foreignKey": "enterprise._id",
+			"description": "卡所属企业"
+		},
+		"memberId": {
+			"title": "会员ID",
+			"bsonType": "string",
+			"foreignKey": "member._id",
+			"description": "持卡会员"
+		},
+		"cardNo": {
+			"title": "卡号",
+			"bsonType": "string",
+			"description": "卡面编号，可与会员卡号一致，企业内唯一"
+		},
+		"cardName": {
+			"title": "卡名称",
+			"bsonType": "string",
+			"description": "如「保养 3 次卡」「洗车套餐卡」"
+		},
+		"cardType": {
+			"title": "卡类型",
+			"bsonType": "int",
+			"enum": [1, 2],
+			"description": "1 次卡（单一项目 N 次）；2 套餐卡（多项目组合）"
+		},
+		"totalTimes": {
+			"title": "总次数",
+			"bsonType": "int",
+			"description": "卡内项目次数合计，冗余字段便于列表展示"
+		},
+		"usedTimes": {
+			"title": "已用次数",
+			"bsonType": "int",
+			"description": "卡内项目已核销次数合计"
+		},
+		"remainingTimes": {
+			"title": "剩余次数",
+			"bsonType": "int",
+			"description": "冗余字段：totalTimes - usedTimes，便于回访规则按余量筛选"
+		},
+		"amount": {
+			"title": "售卡金额",
+			"bsonType": "double",
+			"description": "开卡实收金额，用于统计，不计入储值余额"
+		},
+		"expireAt": {
+			"title": "有效期至",
+			"bsonType": "timestamp",
+			"description": "为空表示长期有效"
+		},
+		"status": {
+			"title": "状态",
+			"bsonType": "int",
+			"enum": [0, 1, 2, 3],
+			"description": "0 停用；1 正常；2 已用完；3 已过期"
+		},
+		"sourceOrderId": {
+			"title": "售卡工单ID",
+			"bsonType": "string",
+			"foreignKey": "order._id",
+			"description": "通过哪张工单售出，可为空"
+		},
+		"remark": {
+			"title": "备注",
+			"bsonType": "string"
+		},
+		"creatorUserId": {
+			"title": "开卡员工ID",
+			"bsonType": "string",
+			"foreignKey": "user._id"
+		},
+		"createTime": {
+			"title": "开卡时间",
+			"bsonType": "timestamp"
+		},
+		"updateTime": {
+			"title": "更新时间",
+			"bsonType": "timestamp"
+		}
+	}
+}

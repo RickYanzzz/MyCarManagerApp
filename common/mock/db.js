@@ -252,6 +252,12 @@ function seedDb() {
 		],
 		spare_parts: spareParts,
 		spare_part_logs: sparePartLogs,
+		// AI 回访相关集合（演示客户由 mock/followup.js 首次扫描时自动补齐）
+		member_card: [],
+		member_card_item: [],
+		followup_task: [],
+		followup_script: [],
+		followup_log: [],
 		__seedTime: now
 	}
 }

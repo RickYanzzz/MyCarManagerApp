@@ -1,0 +1,88 @@
+{
+	"bsonType": "object",
+	"required": ["enterpriseId", "ruleCode", "reason", "status"],
+	"permission": {
+		"read": false,
+		"create": false,
+		"update": false,
+		"delete": false
+	},
+	"properties": {
+		"_id": {
+			"description": "ID，系统自动生成"
+		},
+		"enterpriseId": {
+			"title": "企业ID",
+			"bsonType": "string",
+			"foreignKey": "enterprise._id"
+		},
+		"memberId": {
+			"title": "会员ID",
+			"bsonType": "string",
+			"foreignKey": "member._id",
+			"description": "可为空：仅登记了车辆、未开卡的客户"
+		},
+		"carId": {
+			"title": "车辆ID",
+			"bsonType": "string",
+			"foreignKey": "car_info._id"
+		},
+		"contactName": {
+			"title": "联系人称呼",
+			"bsonType": "string",
+			"description": "如「王姐」，仅脱敏后的姓+称谓"
+		},
+		"contactPhone": {
+			"title": "联系电话",
+			"bsonType": "string",
+			"description": "门店自用，不进入大模型请求"
+		},
+		"ruleCode": {
+			"title": "规则编码",
+			"bsonType": "string",
+			"description": "R1 保险到期；R2 流失挽回；R3 余额闲置；R7 次卡余量"
+		},
+		"ruleLabel": {
+			"title": "规则名称",
+			"bsonType": "string"
+		},
+		"priority": {
+			"title": "优先级",
+			"bsonType": "int",
+			"description": "0-100，紧急度 × 客户价值，越大越靠前"
+		},
+		"reason": {
+			"title": "触发原因",
+			"bsonType": "string",
+			"description": "给店主看的一句话，如「175 天未到店」"
+		},
+		"factSnapshot": {
+			"title": "事实卡",
+			"bsonType": "object",
+			"description": "生成话术的唯一事实来源，禁止模型引用卡外信息"
+		},
+		"status": {
+			"title": "状态",
+			"bsonType": "string",
+			"enum": ["pending", "generated", "sent", "converted", "ignored"],
+			"description": "pending 待回访；generated 已生成话术；sent 已发送；converted 已到店转化；ignored 已忽略"
+		},
+		"dueDate": {
+			"title": "建议联系日期",
+			"bsonType": "timestamp"
+		},
+		"consentAt": {
+			"title": "授权时间快照",
+			"bsonType": "timestamp",
+			"description": "生成任务时客户已同意接收服务提醒"
+		},
+		"createdAt": {
+			"title": "创建时间",
+			"bsonType": "timestamp"
+		},
+		"updatedAt": {
+			"title": "更新时间",
+			"bsonType": "timestamp"
+		}
+	}
+}

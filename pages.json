@@ -202,6 +202,13 @@
 			}
 		},
 		{
+			"path": "pages/followup/workbench",
+			"style": {
+				"navigationBarTitleText": "AI 回访",
+				"enablePullDownRefresh": false
+			}
+		},
+		{
 			"path": "pages/appointment/board",
 			"style": {
 				"navigationBarTitleText": "预约排班",

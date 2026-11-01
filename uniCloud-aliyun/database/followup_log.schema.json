@@ -1,0 +1,59 @@
+{
+	"bsonType": "object",
+	"required": ["enterpriseId", "taskId", "action"],
+	"permission": {
+		"read": false,
+		"create": false,
+		"update": false,
+		"delete": false
+	},
+	"properties": {
+		"_id": {
+			"description": "ID，系统自动生成"
+		},
+		"enterpriseId": {
+			"title": "企业ID",
+			"bsonType": "string",
+			"foreignKey": "enterprise._id"
+		},
+		"taskId": {
+			"title": "回访任务ID",
+			"bsonType": "string",
+			"foreignKey": "followup_task._id"
+		},
+		"action": {
+			"title": "动作",
+			"bsonType": "string",
+			"enum": ["generate", "copy", "wechat", "sms", "call", "sent", "ignored"],
+			"description": "generate 生成话术；copy 复制；wechat 跳微信；sent 已发送；ignored 忽略"
+		},
+		"channel": {
+			"title": "通道",
+			"bsonType": "string",
+			"description": "manual 手动微信 / wecom 企业微信 / sms 短信 / call 电话"
+		},
+		"operatorUserId": {
+			"title": "操作员工ID",
+			"bsonType": "string",
+			"foreignKey": "user._id"
+		},
+		"operatorName": {
+			"title": "操作员工姓名",
+			"bsonType": "string"
+		},
+		"note": {
+			"title": "备注",
+			"bsonType": "string"
+		},
+		"convertedOrderId": {
+			"title": "转化的工单ID",
+			"bsonType": "string",
+			"foreignKey": "order._id",
+			"description": "回访后 N 天内产生的入账订单"
+		},
+		"createdAt": {
+			"title": "时间",
+			"bsonType": "timestamp"
+		}
+	}
+}

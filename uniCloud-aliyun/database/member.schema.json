@@ -68,6 +68,27 @@
 			"foreignKey": "user._id",
 			"description": "开卡员工"
 		},
+		"consentMarketing": {
+			"title": "同意接收服务提醒",
+			"bsonType": "bool",
+			"description": "营销授权。未显式关闭前按同意处理，会员详情可关闭；显式 false 的会员不会进入 AI 回访列表"
+		},
+		"consentAt": {
+			"title": "授权时间",
+			"bsonType": "timestamp",
+			"description": "最后一次授权或撤回授权的时间"
+		},
+		"birthday": {
+			"title": "生日",
+			"bsonType": "string",
+			"description": "MM-DD 或 YYYY-MM-DD，用于生日关怀规则（R8，二期）"
+		},
+		"gender": {
+			"title": "性别",
+			"bsonType": "int",
+			"enum": [0, 1, 2],
+			"description": "0 未知；1 男；2 女，用于称呼「哥/姐」"
+		},
 		"createTime": {
 			"title": "创建时间",
 			"bsonType": "timestamp"

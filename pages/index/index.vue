@@ -71,6 +71,11 @@
 						url: "/pages/analytics/analytics",
 						text: "经营统计"
 					}, {
+						id: 11,
+						icon: 'icon-kehuchaxun',
+						url: "/pages/followup/workbench",
+						text: "AI 回访"
+					}, {
 						id: 5,
 						icon: 'icon-huiyuanchaxun',
 						url: "/pages/member/list",

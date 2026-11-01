@@ -48,6 +48,12 @@ exports.main = async (event, context) => {
 	const phone = String(event.phone || '').trim()
 	const level = String(event.level || '普通会员').trim() || '普通会员'
 	const remark = String(event.remark || '').trim()
+	// 性别：0 未知 / 1 男 / 2 女（回访话术称呼"哥/姐"用）
+	let gender = parseInt(event.gender) || 0
+	if (![0, 1, 2].includes(gender)) gender = 0
+	// 生日：YYYY-MM-DD 或 MM-DD（生日关怀规则用）
+	let birthday = String(event.birthday || '').trim()
+	if (birthday && !/^(\d{4}-\d{2}-\d{2}|\d{2}-\d{2})$/.test(birthday)) birthday = ''
 	if (!name || !phone) return fail(400, '姓名和手机号不能为空')
 
 	const phoneRes = await db.collection('member').where({ enterpriseId: auth.enterpriseId, phone }).get()
@@ -68,6 +74,8 @@ exports.main = async (event, context) => {
 		name,
 		phone,
 		level,
+		gender,
+		birthday,
 		balance: 0,
 		totalRecharge: 0,
 		totalConsume: 0,

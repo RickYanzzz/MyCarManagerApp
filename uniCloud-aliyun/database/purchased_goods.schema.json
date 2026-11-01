@@ -63,6 +63,27 @@
 		"unit": {
 			"title": "单位",
 			"bsonType": "string"
+		},
+		"createdAt": {
+			"title": "项目时间",
+			"bsonType": "timestamp",
+			"description": "该项目加入工单/施工的时间，记录什么时候做的项目；回访周期计算依据"
+		},
+		"category": {
+			"title": "项目分类",
+			"bsonType": "string",
+			"enum": ["保养", "洗美", "轮胎", "易损件", "其他"],
+			"description": "添加时按周期标准匹配的分类快照"
+		},
+		"cycleDays": {
+			"title": "建议周期（天）",
+			"bsonType": "int",
+			"description": "添加时的周期快照，用于下次保养提醒"
+		},
+		"cycleName": {
+			"title": "匹配的周期标准",
+			"bsonType": "string",
+			"description": "匹配到的标准项目名，如 机油+机油滤芯（全合成）"
 		}
 	}
 }

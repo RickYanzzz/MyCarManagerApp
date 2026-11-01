@@ -39,6 +39,28 @@
 				<view class="info-row"><text class="info-label">开卡时间</text><text>{{ formatTime(member.createTime) }}</text></view>
 			</view>
 
+			<view class="member-section-title">
+				<text>次卡 / 套餐卡</text>
+				<text class="section-action" @click="openCard">开次卡</text>
+			</view>
+			<view class="mc-box" v-if="(cards || []).length">
+				<view class="mc-item" v-for="card in cards" :key="card._id">
+					<view class="mc-head">
+						<text class="mc-name">{{ card.cardName }}</text>
+						<text class="mc-left">剩 {{ card.remainingTimes || 0 }}/{{ card.totalTimes || 0 }} 次</text>
+					</view>
+					<view class="mc-tags">
+						<text class="mc-tag" v-for="it in card.items || []" :key="it._id">
+							{{ it.goodsName }} {{ it.remainingTimes }}/{{ it.totalTimes }}
+						</text>
+					</view>
+					<text class="mc-expire" v-if="card.expireAt">有效期至 {{ formatTime(card.expireAt) }}</text>
+				</view>
+			</view>
+			<view class="member-car-card" v-else>
+				<view class="member-empty">暂无次卡，点右上角「开次卡」</view>
+			</view>
+
 			<view class="member-section-title">绑定车辆</view>
 			<view class="member-car-card">
 				<view class="member-car-item" v-for="car in member.cars || []" :key="car._id">
@@ -66,6 +88,28 @@
 				</view>
 			</view>
 		</uni-popup>
+
+		<uni-popup ref="cardPopup" type="center">
+			<view class="bind-popup">
+				<view class="bind-popup-title">开次卡</view>
+				<view class="card-field">
+					<uni-easyinput v-model="cardForm.cardName" placeholder="卡名称，如 保养三次卡"></uni-easyinput>
+				</view>
+				<view class="card-field">
+					<uni-easyinput v-model="cardForm.goodsName" placeholder="项目名称，如 小保养"></uni-easyinput>
+				</view>
+				<view class="card-field">
+					<uni-easyinput v-model="cardForm.totalTimes" type="number" placeholder="次数，如 3"></uni-easyinput>
+				</view>
+				<view class="card-field">
+					<uni-easyinput v-model="cardForm.amount" type="number" placeholder="售价（元），如 600"></uni-easyinput>
+				</view>
+				<view class="bind-popup-btns">
+					<button class="popup-btn" @click="closeCard">取消</button>
+					<button class="popup-btn primary" @click="submitCard">确认开卡</button>
+				</view>
+			</view>
+		</uni-popup>
 	</view>
 </template>
 
@@ -75,16 +119,77 @@
 			return {
 				memberId: '',
 				member: {},
-				bindCarNumber: ''
+				bindCarNumber: '',
+				cards: [],
+				cardForm: {
+					cardName: '',
+					goodsName: '',
+					totalTimes: '',
+					amount: ''
+				}
 			}
 		},
 		onLoad(options) {
 			this.memberId = options.id || ''
 		},
 		onShow() {
-			if (this.memberId) this.loadData()
+			if (this.memberId) {
+				this.loadData()
+				this.loadCards()
+			}
 		},
 		methods: {
+			loadCards() {
+				this.$api.get_member_cards({
+					memberId: this.memberId
+				}).then(res => {
+					this.cards = (res.data && res.data.list) || []
+				}).catch(() => {
+					this.cards = []
+				})
+			},
+			openCard() {
+				this.cardForm = { cardName: '', goodsName: '', totalTimes: '', amount: '' }
+				this.$refs.cardPopup.open()
+			},
+			closeCard() {
+				this.$refs.cardPopup.close()
+			},
+			submitCard() {
+				const form = this.cardForm
+				if (!String(form.cardName || '').trim()) {
+					return uni.showToast({ title: '请填写卡名称', icon: 'none' })
+				}
+				if (!String(form.goodsName || '').trim()) {
+					return uni.showToast({ title: '请填写项目名称', icon: 'none' })
+				}
+				const times = parseInt(form.totalTimes)
+				if (!times || times <= 0) {
+					return uni.showToast({ title: '次数要大于 0', icon: 'none' })
+				}
+				uni.showLoading({ title: '开卡中...' })
+				this.$api.add_member_card({
+					memberId: this.memberId,
+					cardName: String(form.cardName).trim(),
+					cardType: 1,
+					amount: Number(form.amount) || 0,
+					items: [{
+						goodsName: String(form.goodsName).trim(),
+						totalTimes: times
+					}]
+				}).then(() => {
+					uni.hideLoading()
+					this.closeCard()
+					this.loadCards()
+					uni.showToast({ title: '开卡成功', icon: 'none' })
+				}).catch(err => {
+					uni.hideLoading()
+					uni.showToast({
+						title: (err && (err.message || err.msg || err.errMsg)) || '开卡失败',
+						icon: 'none'
+					})
+				})
+			},
 			loadData() {
 				uni.showLoading({
 					title: '加载中...'
@@ -109,6 +214,10 @@
 				} catch (e) {
 					return '-'
 				}
+			},
+			genderText(gender) {
+				const g = parseInt(gender) || 0
+				return g === 1 ? '男' : g === 2 ? '女' : '未填写'
 			},
 			goRecharge() {
 				if (this.member.status != 1) {
@@ -456,5 +565,72 @@
 	.popup-btn.primary {
 		background-color: #6EA0F7;
 		color: #ffffff;
+	}
+
+	.member-section-title {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+	}
+
+	.section-action {
+		color: #6EA0F7;
+		font-size: 13px;
+	}
+
+	.card-field {
+		margin-bottom: 8px;
+	}
+
+	.mc-box {
+		background-color: #ffffff;
+		border-radius: 10px;
+		padding: 4px 18px;
+	}
+
+	.mc-item {
+		padding: 14px 0;
+		border-bottom: 1px solid #F0F2F5;
+	}
+
+	.mc-item:last-child {
+		border-bottom: none;
+	}
+
+	.mc-head {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+	}
+
+	.mc-name {
+		font-size: 15px;
+		color: #333333;
+		font-weight: 500;
+	}
+
+	.mc-left {
+		font-size: 13px;
+		color: #6EA0F7;
+	}
+
+	.mc-tags {
+		display: flex;
+		flex-wrap: wrap;
+		margin-top: 8px;
+	}
+
+	.mc-tag {
+		font-size: 12px;
+		color: #666666;
+		background-color: #F3F6FC;
+		border-radius: 4px;
+		padding: 3px 8px;
+		margin: 0 8px 6px 0;
+	}
+
+	.mc-expire {
+		font-size: 12px;
+		color: #9AA4B2;
 	}
 </style>

@@ -1,0 +1,79 @@
+{
+	"bsonType": "object",
+	"required": ["enterpriseId", "cardId", "memberId", "goodsName"],
+	"permission": {
+		"read": false,
+		"create": false,
+		"update": false,
+		"delete": false
+	},
+	"properties": {
+		"_id": {
+			"description": "ID，系统自动生成"
+		},
+		"enterpriseId": {
+			"title": "企业ID",
+			"bsonType": "string",
+			"foreignKey": "enterprise._id"
+		},
+		"cardId": {
+			"title": "卡ID",
+			"bsonType": "string",
+			"foreignKey": "member_card._id",
+			"description": "所属卡头"
+		},
+		"memberId": {
+			"title": "会员ID",
+			"bsonType": "string",
+			"foreignKey": "member._id",
+			"description": "冗余，便于按会员直查权益"
+		},
+		"goodsId": {
+			"title": "项目ID",
+			"bsonType": "string",
+			"foreignKey": "goods._id",
+			"description": "对应 goods 集合，可为空（手工填写的项目名）"
+		},
+		"goodsName": {
+			"title": "项目名称",
+			"bsonType": "string",
+			"description": "如「小保养」「精洗」"
+		},
+		"totalTimes": {
+			"title": "总次数",
+			"bsonType": "int"
+		},
+		"usedTimes": {
+			"title": "已用次数",
+			"bsonType": "int"
+		},
+		"remainingTimes": {
+			"title": "剩余次数",
+			"bsonType": "int"
+		},
+		"expireAt": {
+			"title": "该权益有效期",
+			"bsonType": "timestamp",
+			"description": "为空则继承卡头有效期"
+		},
+		"lastUsedAt": {
+			"title": "最近核销时间",
+			"bsonType": "timestamp",
+			"description": "回访规则 R7 用它判断「多久没用」"
+		},
+		"status": {
+			"title": "状态",
+			"bsonType": "int",
+			"enum": [0, 1, 2],
+			"description": "0 停用；1 正常；2 已用完"
+		},
+		"createTime": {
+			"title": "创建时间",
+			"bsonType": "timestamp"
+		},
+		"updateTime": {
+			"title": "更新时间",
+			"bsonType": "timestamp"
+		}
+	}
+}

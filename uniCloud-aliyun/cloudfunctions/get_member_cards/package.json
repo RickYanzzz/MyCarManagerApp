@@ -1,0 +1,10 @@
+{
+	"name": "get_member_cards",
+	"dependencies": {},
+	"extensions": {
+		"uni-cloud-jql": {}
+	},
+	"cloudfunction-config": {
+		"timeout": 15
+	}
+}

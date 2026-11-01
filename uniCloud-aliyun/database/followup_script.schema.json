@@ -1,0 +1,71 @@
+{
+	"bsonType": "object",
+	"required": ["enterpriseId", "taskId", "fullText"],
+	"permission": {
+		"read": false,
+		"create": false,
+		"update": false,
+		"delete": false
+	},
+	"properties": {
+		"_id": {
+			"description": "ID，系统自动生成"
+		},
+		"enterpriseId": {
+			"title": "企业ID",
+			"bsonType": "string",
+			"foreignKey": "enterprise._id"
+		},
+		"taskId": {
+			"title": "回访任务ID",
+			"bsonType": "string",
+			"foreignKey": "followup_task._id"
+		},
+		"fullText": {
+			"title": "完整话术",
+			"bsonType": "string",
+			"description": "实际发给客户的文本"
+		},
+		"opening": {
+			"title": "开场称呼",
+			"bsonType": "string",
+			"description": "如「王姐早上好」"
+		},
+		"reasonText": {
+			"title": "回访理由句",
+			"bsonType": "string"
+		},
+		"invite": {
+			"title": "行动邀请",
+			"bsonType": "string"
+		},
+		"tone": {
+			"title": "语气风格",
+			"bsonType": "string",
+			"description": "warm 亲切 / pro 专业 / short 简短"
+		},
+		"source": {
+			"title": "来源",
+			"bsonType": "string",
+			"enum": ["ai", "template"],
+			"description": "ai 大模型生成；template 校验失败或未配置模型时的模板降级"
+		},
+		"model": {
+			"title": "模型名称",
+			"bsonType": "string"
+		},
+		"promptVersion": {
+			"title": "提示词版本",
+			"bsonType": "string"
+		},
+		"riskFlags": {
+			"title": "风险标记",
+			"bsonType": "array",
+			"description": "数字不在事实卡内、命中禁用词、超长等"
+		},
+		"createdAt": {
+			"title": "生成时间",
+			"bsonType": "timestamp"
+		}
+	}
+}

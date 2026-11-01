@@ -4,6 +4,13 @@
  * 只在开发模式生效，数据保存在 uni.setStorageSync。
  */
 import { loadDb, saveDb, resetMockDb, makeId } from './db.js'
+import {
+	followup_scan,
+	followup_generate,
+	followup_list,
+	followup_mark,
+	followup_debug
+} from './followup.js'
 
 function clone(value) {
 	return JSON.parse(JSON.stringify(value))
@@ -966,5 +973,10 @@ export default {
 	recharge_member,
 	consume_member_balance,
 	get_member_transactions,
+	followup_scan,
+	followup_generate,
+	followup_list,
+	followup_mark,
+	followup_debug,
 	resetMockData
 }

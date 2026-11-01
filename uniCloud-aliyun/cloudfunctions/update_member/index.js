@@ -42,6 +42,14 @@ exports.main = async (event, context) => {
 	}
 	if (event.level !== undefined) data.level = String(event.level || '普通会员').trim() || '普通会员'
 	if (event.remark !== undefined) data.remark = String(event.remark || '').trim()
+	if (event.gender !== undefined) {
+		const gender = parseInt(event.gender) || 0
+		data.gender = [0, 1, 2].includes(gender) ? gender : 0
+	}
+	if (event.birthday !== undefined) {
+		const birthday = String(event.birthday || '').trim()
+		data.birthday = (!birthday || /^(\d{4}-\d{2}-\d{2}|\d{2}-\d{2})$/.test(birthday)) ? birthday : data.birthday
+	}
 
 	await db.collection('member').doc(memberId).update(data)
 	const updated = await db.collection('member').doc(memberId).get()

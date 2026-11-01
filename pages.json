@@ -196,6 +196,13 @@
 				"navigationBarTitleText": "经营统计",
 				"enablePullDownRefresh": true
 			}
+		},
+		{
+			"path": "pages/followup/workbench",
+			"style": {
+				"navigationBarTitleText": "AI 回访",
+				"enablePullDownRefresh": false
+			}
 		}
 	],
 

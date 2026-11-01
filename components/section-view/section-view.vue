@@ -12,7 +12,7 @@
 			<uni-list v-if="item.id == 0" >
 				<view class="" v-for="(data,index) in item.list" :key="index">
 						<uni-swipe-action-item :disabled="status==2 || data.source==='spare_part'" :right-options="options" @click="onClick(data)" @change="change">
-							<uni-list-item :title="(data.source==='spare_part' ? '[备件] ' : '') + data.name+' x'+data.count" :show-badge="true" :right-text="data.fee"
+							<uni-list-item :title="(data.source==='spare_part' ? '[备件] ' : '') + data.name+' x'+data.count" :show-badge="true" :right-text="rowRight(data)"
 								:badge-style="{background: '#CC71BF'}" clickable="true" @click="modifyItem(data)">
 							</uni-list-item>
 						</uni-swipe-action-item>
@@ -54,8 +54,20 @@
 				required:true
 			}
 		},
-		methods: {
-			onClick(e) {
+	methods: {
+		rowRight(data) {
+			let text = String(data.fee)
+			// 显示项目时间（什么时候做的），格式 MM-DD HH:mm
+			if (data.createdAt) {
+				const d = new Date(data.createdAt)
+				if (!isNaN(d.getTime())) {
+					const pad = n => String(n).padStart(2, '0')
+					text += ' · ' + pad(d.getMonth() + 1) + '-' + pad(d.getDate()) + ' ' + pad(d.getHours()) + ':' + pad(d.getMinutes())
+				}
+			}
+			return text
+		},
+		onClick(e) {
 				const that = this
 				this.$api.delete_purchased_goods({
 					_id:e._id

@@ -26,6 +26,10 @@
 </template>
 
 <script>
+	import {
+		matchCycleByName
+	} from '../../../../common/js/cycle-presets.js'
+
 	export default {
 		data() {
 			return {
@@ -94,13 +98,20 @@
 			    uni.showLoading({
 			    	title:"添加中..."
 			    })
-				const data= {
+				const data = {
 					"name": that.customFormData.name,
 					"fee": that.customFormData.fee,
-					"count": that.customFormData.count?that.customFormData.count:1,
+					"count": that.customFormData.count ? that.customFormData.count : 1,
 					"orderId": that.query.orderId,
 					"carId": that.query.carId,
 					"status": 0
+				}
+				// 按周期标准匹配分类与建议周期，作为快照写入（用于下次保养提醒）
+				const cycle = matchCycleByName(data.name)
+				if (cycle) {
+					data.category = cycle.category
+					data.cycleDays = cycle.cycleDays
+					data.cycleName = cycle.cycleName
 				}
 				console.log("data=====",JSON.stringify(data));
 				that.$api.add_purchased_goods(data).then(res => {

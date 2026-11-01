@@ -31,6 +31,14 @@ import {
 import mockApi from "../mock/api.js"
 import { USE_MOCK } from "../mock/config.js"
 import {
+	followup_scan,
+	followup_generate,
+	followup_list,
+	followup_mark,
+	followup_debug
+} from "./followup.js"
+import { add_member_card, get_member_cards } from "./memberCard.js"
+import {
 	get_analytics_summary,
 	analytics_test_data,
 	seed_analytics_test_data,
@@ -93,7 +101,14 @@ const realApi = {
 	bind_member_car,
 	recharge_member,
 	consume_member_balance,
-	get_member_transactions
+	get_member_transactions,
+	followup_scan,
+	followup_generate,
+	followup_list,
+	followup_mark,
+	followup_debug,
+	add_member_card,
+	get_member_cards
 }
 
 // 默认走真实 uniCloud API；本地无云调试时才在 common/mock/config.js 打开 mock。

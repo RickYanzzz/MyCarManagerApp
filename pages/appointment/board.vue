@@ -377,7 +377,7 @@
 			scrollToWorkTime() {
 				if (this.slots.length === 0) return
 				let slotIndex = 0
-				if (this.isToday()) {
+				if (this.isToday) {
 					const p = beijingParts(Date.now())
 					if (p) {
 						const idx = Math.floor((p.minutesOfDay - this.config.openMinutes) / this.config.slotMinutes)
@@ -480,7 +480,7 @@
 				return list.length + '单 · ' + hours + 'h'
 			},
 			isCurrentSlot(slot) {
-				if (!this.isToday()) return false
+				if (!this.isToday) return false
 				const p = beijingParts(Date.now())
 				if (!p) return false
 				return p.minutesOfDay >= slot.startMinutes && p.minutesOfDay < slot.endMinutes

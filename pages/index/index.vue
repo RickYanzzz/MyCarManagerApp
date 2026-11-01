@@ -72,6 +72,11 @@
 						text: "经营统计"
 					}, {
 						id: 11,
+						icon: 'icon-bill-text',
+						url: '/pages/work_orders/records',
+						text: '工单记录'
+					},{
+						id: 12,
 						icon: 'icon-guazhangmingxibiao',
 						url: "/pages/appointment/board",
 						text: "预约排班"

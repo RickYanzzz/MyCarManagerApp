@@ -1,0 +1,7 @@
+{
+  "name": "appointment_api",
+  "dependencies": {},
+  "extensions": {
+    "uni-cloud-jql": {}
+  }
+}

@@ -11,6 +11,7 @@ import {
 	followup_mark,
 	followup_debug
 } from './followup.js'
+import * as S from '../utils/schedule.js'
 
 function clone(value) {
 	return JSON.parse(JSON.stringify(value))
@@ -922,6 +923,474 @@ function get_member_transactions(data) {
 	})
 }
 
+/* ---------------- 预约排班 ---------------- */
+
+const APPT_CONFIG = { slotMinutes: 60, openMinutes: 8 * 60, closeMinutes: 19 * 60, startAlignMinutes: 30, bayCount: 3 }
+const APPT_COLORS = ['#6EA0F7', '#7EC8B8', '#F2B36B', '#B9A7F0', '#E58B8B', '#63B3C7', '#D4A373', '#8A94A6']
+
+function apptColor(id) {
+	const str = String(id || '')
+	let hash = 0
+	for (let i = 0; i < str.length; i++) hash = (hash * 31 + str.charCodeAt(i)) % 1000003
+	return APPT_COLORS[hash % APPT_COLORS.length]
+}
+
+function apptTechnicians(db, enterpriseId) {
+	const staff = (db.user || []).filter(u =>
+		u.enterpriseId === enterpriseId && !(u.status === 0 || u.status === false || u.status === '0')
+	)
+	const flagged = staff.filter(u => u.canBeTechnician === true)
+	return {
+		list: (flagged.length ? flagged : staff).map(u => ({
+			_id: u._id,
+			name: u.realName || u.username || '未命名',
+			phone: u.phoneNumber || '',
+			canBeTechnician: u.canBeTechnician === true,
+			color: apptColor(u._id)
+		})),
+		hasTechnicianFlag: flagged.length > 0,
+		staffCount: staff.length
+	}
+}
+
+/**
+ * 格位计算：本地 mock 扮演服务端，口径与云函数 lib/schedule.js 的 slotSpanOf 一致。
+ * 昨天开始、今天还在做的单落在首档；今天干不完的截到末档。
+ */
+function apptSpan(a, cfg, dayStart) {
+	const start = Number(a.startTime)
+	const end = S.resolveEndTime(a)
+	const spanSlots = Math.max(1, Math.ceil(S.resolveDuration(a) / cfg.slotMinutes))
+	const fromMin = (start - dayStart) / 60000
+	const toMin = (end - dayStart) / 60000
+	const startsBeforeDay = fromMin < cfg.openMinutes
+	const endsAfterDay = toMin > cfg.closeMinutes
+	const totalSlots = S.buildSlots(cfg).length
+	if (!isFinite(toMin) || toMin <= cfg.openMinutes || fromMin >= cfg.closeMinutes) {
+		return { startSlot: -1, spanSlots: spanSlots, clippedSpan: 0, visible: false, startsBeforeDay: startsBeforeDay, endsAfterDay: endsAfterDay }
+	}
+	const startSlot = fromMin <= cfg.openMinutes ? 0 : Math.floor((fromMin - cfg.openMinutes) / cfg.slotMinutes)
+	const bounded = Math.max(0, startSlot)
+	const endSlotExclusive = Math.min(totalSlots, Math.ceil((Math.min(toMin, cfg.closeMinutes) - cfg.openMinutes) / cfg.slotMinutes))
+	return {
+		startSlot: bounded,
+		spanSlots: spanSlots,
+		clippedSpan: Math.max(1, endSlotExclusive - bounded),
+		visible: true,
+		startsBeforeDay: startsBeforeDay,
+		endsAfterDay: endsAfterDay
+	}
+}
+
+function apptBoardTime(a, dayStart) {
+	const prefix = Number(a.startTime) < dayStart ? '昨日 ' : ''
+	return prefix + S.timeRangeText(a)
+}
+
+/** 逐档统计工位占用，返回峰值与排满的档 */
+function apptBayLoad(list, cfg, dayStart) {
+	const slots = S.buildSlots(cfg)
+	const occupying = (list || []).filter(a => a && S.isOccupying(a.status))
+	const load = slots.map(slot => {
+		let count = 0
+		occupying.forEach(a => {
+			const from = (Number(a.startTime) - dayStart) / 60000
+			const to = from + S.resolveDuration(a)
+			if (from < slot.endMinutes && slot.startMinutes < to) count++
+		})
+		return count
+	})
+	let peak = 0
+	let peakIndex = -1
+	load.forEach((n, i) => {
+		if (n > peak) {
+			peak = n
+			peakIndex = i
+		}
+	})
+	const fullSlots = []
+	if (cfg.bayCount > 0) {
+		load.forEach((n, i) => {
+			if (n >= cfg.bayCount) fullSlots.push(i)
+		})
+	}
+	return {
+		bayCount: cfg.bayCount,
+		load: load,
+		peak: peak,
+		peakLabel: peakIndex >= 0 ? slots[peakIndex].rangeText : '',
+		fullSlots: fullSlots,
+		fullLabels: fullSlots.map(i => slots[i].rangeText)
+	}
+}
+
+function apptDecorate(list, cfg, conflictIds, dayStart) {
+	return list.map(a => {
+		const span = apptSpan(a, cfg, dayStart)
+		const duration = S.resolveDuration(a)
+		return Object.assign({}, a, {
+			status: Number(a.status),
+			statusText: S.STATUS_TEXT[Number(a.status)] || '未知',
+			timeRangeText: S.timeRangeText(a),
+			boardTimeText: apptBoardTime(a, dayStart),
+			duration: duration,
+			bayNo: parseInt(a.bayNo, 10) || 0,
+			startSlot: span.startSlot,
+			spanSlots: span.spanSlots,
+			clippedSpan: span.clippedSpan || 0,
+			visible: span.visible,
+			startsBeforeDay: !!span.startsBeforeDay,
+			endsAfterDay: !!span.endsAfterDay,
+			crossDay: S.crossesDay(a),
+			hasConflict: conflictIds.indexOf(a._id) > -1,
+			technicianColor: apptColor(a.technicianId)
+		})
+	})
+}
+
+/** 与某天有交集的预约 */
+function apptOverlapsDay(a, dayStart, dayEnd) {
+	const start = Number(a.startTime)
+	const end = S.resolveEndTime(a)
+	if (isNaN(start) || isNaN(end)) return false
+	return start < dayEnd && end > dayStart
+}
+
+function get_appointment_board(data) {
+	const db = loadDb()
+	const enterpriseId = data.enterpriseId || currentEnterpriseId(db)
+	const cfg = S.normalizeConfig(APPT_CONFIG)
+	const dateKey = data.date || S.todayKey()
+	const dayStart = S.dayStartFromKey(dateKey)
+	if (isNaN(dayStart)) return fail('日期格式应为 YYYY-MM-DD')
+	const dayEnd = dayStart + S.DAY_MS
+
+	const techInfo = apptTechnicians(db, enterpriseId)
+	// 跨天预约：昨天开始、今天还在做的单也要取回来
+	const appointments = (db.appointment || []).filter(a =>
+		a.enterpriseId === enterpriseId && apptOverlapsDay(a, dayStart, dayEnd)
+	)
+
+	// 冲突对：同师傅重叠 + 同工位重叠（前端工具包不含冲突对检测，这里就地算）
+	const conflictIds = []
+	const occupying = appointments.filter(a => S.isOccupying(a.status))
+	for (let i = 0; i < occupying.length; i++) {
+		for (let j = i + 1; j < occupying.length; j++) {
+			const a = occupying[i]
+			const b = occupying[j]
+			const hit = Number(a.startTime) < S.resolveEndTime(b) && Number(b.startTime) < S.resolveEndTime(a)
+			if (!hit) continue
+			const sameTech = String(a.technicianId) === String(b.technicianId)
+			const bayA = parseInt(a.bayNo, 10) || 0
+			const sameBay = bayA > 0 && bayA === (parseInt(b.bayNo, 10) || 0)
+			if (!sameTech && !sameBay) continue
+			if (conflictIds.indexOf(a._id) < 0) conflictIds.push(a._id)
+			if (conflictIds.indexOf(b._id) < 0) conflictIds.push(b._id)
+		}
+	}
+
+	const decorated = apptDecorate(appointments, cfg, conflictIds, dayStart)
+	const filtered = data.technicianId ? decorated.filter(a => a.technicianId === data.technicianId) : decorated
+
+	const summary = {
+		total: 0, booked: 0, working: 0, done: 0, cancelled: 0, noShow: 0,
+		crossDayCount: 0, occupiedMinutes: 0, conflictCount: conflictIds.length, loadRate: 0
+	}
+	const winStart = dayStart + cfg.openMinutes * 60000
+	const winEnd = dayStart + cfg.closeMinutes * 60000
+	appointments.forEach(a => {
+		const status = Number(a.status)
+		if (status === 3) { summary.cancelled++; return }
+		summary.total++
+		if (status === 0) summary.booked++
+		if (status === 1) summary.working++
+		if (status === 2) summary.done++
+		if (status === 4) summary.noShow++
+		if (S.crossesDay(a)) summary.crossDayCount++
+		if (S.isOccupying(status)) {
+			// 跨天单只算落在当天的部分
+			const from = Math.max(Number(a.startTime), winStart)
+			const to = Math.min(S.resolveEndTime(a), winEnd)
+			summary.occupiedMinutes += to > from ? Math.round((to - from) / 60000) : 0
+		}
+	})
+	const capacity = techInfo.list.length * (cfg.closeMinutes - cfg.openMinutes)
+	summary.loadRate = capacity > 0 ? Math.min(1, summary.occupiedMinutes / capacity) : 0
+	summary.conflictPairs = Math.floor(conflictIds.length / 2)
+	summary.bayCount = cfg.bayCount
+
+	const bays = apptBayLoad(appointments, cfg, dayStart)
+	summary.bayPeak = bays.peak
+	summary.bayPeakLabel = bays.peakLabel
+	summary.bayFullCount = bays.fullSlots.length
+	summary.bayFullLabels = bays.fullLabels
+
+	const goods = (db.goods || []).filter(g => g.enterpriseId === enterpriseId).map(g => ({
+		_id: g._id,
+		name: g.name,
+		fee: parseInt(g.fee, 10) || 0,
+		duration: parseInt(g.duration, 10) || cfg.slotMinutes
+	}))
+
+	return ok({
+		date: dateKey,
+		dateLabel: S.shortDateLabel(dateKey),
+		dayStart: dayStart,
+		dayEnd: dayEnd,
+		config: Object.assign({}, cfg, { openLabel: S.hhmm(cfg.openMinutes), closeLabel: S.hhmm(cfg.closeMinutes) }),
+		slots: S.buildSlots(cfg),
+		technicians: techInfo.list,
+		hasTechnicianFlag: techInfo.hasTechnicianFlag,
+		staffCount: techInfo.staffCount,
+		appointments: filtered,
+		goods: goods,
+		bays: bays,
+		summary: summary
+	})
+}
+
+function get_appointment_detail(data) {
+	const db = loadDb()
+	const enterpriseId = data.enterpriseId || currentEnterpriseId(db)
+	const appt = findById(db.appointment, data.id)
+	if (!appt || appt.enterpriseId !== enterpriseId) return fail('预约不存在')
+	const cfg = S.normalizeConfig(APPT_CONFIG)
+	const dayStart = S.beijingDayStart(appt.startTime)
+	const sameDay = (db.appointment || []).filter(a =>
+		a.enterpriseId === enterpriseId && a.technicianId === appt.technicianId &&
+		apptOverlapsDay(a, dayStart, dayStart + S.DAY_MS)
+	)
+	const conflictIds = []
+	const decorated = apptDecorate([appt], cfg, conflictIds, dayStart)
+	const others = apptDecorate(sameDay.filter(a => a._id !== appt._id), cfg, conflictIds, dayStart)
+	const order = appt.orderId ? findById(db.order, appt.orderId) : null
+	return ok({
+		appointment: decorated[0],
+		others: others,
+		order: order ? { _id: order._id, status: Number(order.status) } : null,
+		bay: {
+			bayNo: parseInt(appt.bayNo, 10) || 0,
+			bayCount: cfg.bayCount,
+			crossDay: S.crossesDay(appt),
+			boardTimeText: apptBoardTime(appt, dayStart)
+		},
+		config: Object.assign({}, cfg, { openLabel: S.hhmm(cfg.openMinutes), closeLabel: S.hhmm(cfg.closeMinutes) })
+	})
+}
+
+function get_appointment_by_member(data) {
+	const db = loadDb()
+	const enterpriseId = data.enterpriseId || currentEnterpriseId(db)
+	const cfg = S.normalizeConfig(APPT_CONFIG)
+	const memberId = String(data.memberId || '')
+	if (!memberId) return fail('缺少会员ID')
+	const limit = Math.min(50, Math.max(1, parseInt(data.limit, 10) || 10))
+	const list = (db.appointment || [])
+		.filter(a => a.enterpriseId === enterpriseId && a.memberId === memberId)
+		.sort((a, b) => Number(b.startTime) - Number(a.startTime))
+		.slice(0, limit)
+	const decorated = apptDecorate(list, cfg, [])
+	const currentTs = now()
+	const isUpcoming = a => (a.status === 0 || a.status === 1) && Number(a.endTime || a.startTime) >= currentTs
+	const upcoming = decorated.filter(isUpcoming).sort((a, b) => Number(a.startTime) - Number(b.startTime))
+	const upcomingIds = upcoming.map(a => a._id)
+	const history = decorated.filter(a => upcomingIds.indexOf(a._id) < 0)
+	return ok({ upcoming: upcoming, history: history, total: decorated.length })
+}
+
+function save_appointment(data) {
+	const db = loadDb()
+	const cfg = S.normalizeConfig(APPT_CONFIG)
+	const enterpriseId = data.enterpriseId || currentEnterpriseId(db)
+	const user = currentUser(db)
+
+	const technicianId = String(data.technicianId || '')
+	if (!technicianId) return fail('请选择师傅')
+	const tech = findById(db.user, technicianId)
+	if (!tech) return fail('所选师傅不存在')
+
+	if (!data.startTime) return fail('请选择预约开始时间')
+	const p = S.beijingParts(data.startTime)
+	if (!p) return fail('预约时间格式不正确')
+	let startTime = Number(data.startTime)
+	const remainder = p.minutesOfDay % cfg.startAlignMinutes
+	if (remainder !== 0) startTime = startTime - remainder * 60 * 1000
+
+	let duration = parseInt(data.duration, 10)
+	if (!duration || duration <= 0) {
+		duration = (data.items || []).reduce((sum, it) => sum + (parseInt(it && it.duration, 10) || 0), 0) || cfg.slotMinutes
+	}
+	if (duration > 24 * 60) return fail('预约时长不能超过 24 小时')
+
+	const car = data.carInfoId ? findById(db.car_info, data.carInfoId) : null
+	const customerName = String(data.customerName || (car && car.owner) || '').trim()
+	if (!customerName && !data.carInfoId && !data.memberId) return fail('请至少填写客户姓名，或选择会员/车辆')
+
+	const list = (db.appointment || []).filter(a => a.enterpriseId === enterpriseId)
+	const conflicts = S.findConflicts(list, { technicianId: technicianId, startTime: startTime, duration: duration, excludeId: data.id })
+	if (conflicts.length) {
+		return Promise.reject({
+			code: 409,
+			status: 'error',
+			message: '该时段师傅已有预约：' + conflicts.map(c => S.timeRangeText(c) + ' ' + (c.customerName || '客户')).join('、'),
+			conflicts: conflicts.map(c => ({ _id: c._id, timeRangeText: S.timeRangeText(c), customerName: c.customerName || '' }))
+		})
+	}
+
+	// 工位容量：全店维度，与师傅冲突分开判断
+	const bayPlan = S.bayPlan(list, {
+		startTime: startTime,
+		endTime: startTime + duration * 60 * 1000,
+		excludeId: data.id
+	}, cfg)
+	if (bayPlan.full) {
+		return Promise.reject({
+			code: 409,
+			status: 'error',
+			message: '该时段 ' + bayPlan.bayCount + ' 个工位都已占用：' +
+				bayPlan.items.map(c => S.timeRangeText(c) + ' ' + (c.customerName || '客户')).join('、') + '，请改约其他时间',
+			bayFull: true,
+			bayCount: bayPlan.bayCount
+		})
+	}
+	let bayNo = 0
+	if (bayPlan.limited) {
+		const wanted = parseInt(data.bayNo, 10) || 0
+		bayNo = bayPlan.freeBays.indexOf(wanted) > -1 ? wanted : bayPlan.suggestedBay
+	}
+
+	const items = (Array.isArray(data.items) ? data.items : [])
+		.filter(it => it && it.name)
+		.map(it => ({
+			goodsId: String(it.goodsId || ''),
+			name: String(it.name).trim(),
+			fee: parseInt(it.fee, 10) || 0,
+			duration: parseInt(it.duration, 10) || cfg.slotMinutes
+		}))
+
+	const patch = {
+		technicianId: technicianId,
+		technicianName: tech.realName || tech.username || '未命名',
+		memberId: data.memberId || '',
+		carInfoId: data.carInfoId || '',
+		carNumber: String(data.carNumber || (car && car.carNumber) || '').trim(),
+		customerName: customerName,
+		customerPhone: String(data.customerPhone || (car && car.ownerphone) || '').trim(),
+		items: items,
+		startTime: startTime,
+		endTime: startTime + duration * 60 * 1000,
+		duration: duration,
+		bayNo: bayNo,
+		remark: String(data.remark || '').trim(),
+		updateTime: now()
+	}
+
+	let id = data.id
+	if (data.id) {
+		const target = findById(db.appointment, data.id)
+		if (!target) return fail('预约不存在')
+		const timeChanged = Number(target.startTime) !== startTime || S.resolveDuration(target) !== duration
+		if (target.orderId && timeChanged) return fail('该预约已开单，改时间请先在工单中处理')
+		Object.assign(target, patch)
+	} else {
+		id = makeId('appt')
+		db.appointment.push(Object.assign({
+			_id: id,
+			enterpriseId: enterpriseId,
+			status: 0,
+			orderId: '',
+			createUserId: user._id || '',
+			createUserName: user.realName || '',
+			createTime: now()
+		}, patch))
+	}
+	saveDb(db)
+	return ok({
+		_id: id,
+		startTime: patch.startTime,
+		endTime: patch.endTime,
+		duration: duration,
+		bayNo: patch.bayNo,
+		warnings: []
+	})
+}
+
+function set_appointment_status(data) {
+	const db = loadDb()
+	const enterpriseId = data.enterpriseId || currentEnterpriseId(db)
+	const target = findById(db.appointment, data.id)
+	if (!target || target.enterpriseId !== enterpriseId) return fail('预约不存在')
+	const status = parseInt(data.status, 10)
+	if ([0, 1, 2, 3, 4].indexOf(status) < 0) return fail('不支持的预约状态')
+	if (status === 3 && target.orderId) return fail('该预约已开单，请先在工单中处理后再取消预约')
+	target.status = status
+	target.updateTime = now()
+	if (data.remark) target.remark = String(data.remark).trim()
+	saveDb(db)
+	return ok({ _id: target._id, status: status, statusText: S.STATUS_TEXT[status] })
+}
+
+function appointment_to_order(data) {
+	const db = loadDb()
+	const enterpriseId = data.enterpriseId || currentEnterpriseId(db)
+	const user = currentUser(db)
+	const appt = findById(db.appointment, data.id)
+	if (!appt || appt.enterpriseId !== enterpriseId) return fail('预约不存在')
+	if (Number(appt.status) === 3) return fail('预约已取消，无法开单')
+	if (appt.orderId) return ok({ orderId: appt.orderId, existing: true })
+	if (!appt.carInfoId) {
+		return Promise.reject({ code: 409, status: 'error', message: '该预约还没有关联车辆，请先到「消费开单」选择车辆建单', needCar: true })
+	}
+
+	const orderId = makeId('order')
+	const time = now()
+	db.order.push({
+		_id: orderId,
+		userId: user._id || '',
+		enterpriseId: enterpriseId,
+		memberId: appt.memberId || '',
+		carInfoId: appt.carInfoId,
+		time: time,
+		updateTime: time,
+		status: 0
+	})
+	;(appt.items || []).forEach(it => {
+		db.purchased_goods.push({
+			_id: makeId('pg'),
+			userId: user._id || '',
+			enterpriseId: enterpriseId,
+			name: it.name,
+			fee: parseInt(it.fee, 10) || 0,
+			count: 1,
+			orderId: orderId,
+			carId: appt.carInfoId,
+			status: 0,
+			source: 'goods'
+		})
+	})
+	appt.status = 1
+	appt.orderId = orderId
+	appt.updateTime = time
+	saveDb(db)
+	return ok({ orderId: orderId, itemCount: (appt.items || []).length })
+}
+
+function set_technician(data) {
+	const db = loadDb()
+	const enterpriseId = data.enterpriseId || currentEnterpriseId(db)
+	const value = data.value !== false
+	const ids = Array.isArray(data.userIds) ? data.userIds : []
+	let updated = 0
+	db.user.forEach(u => {
+		if (u.enterpriseId !== enterpriseId) return
+		if (ids.length && ids.indexOf(u._id) < 0) return
+		u.canBeTechnician = value
+		updated++
+	})
+	saveDb(db)
+	return ok({ updated: updated, value: value })
+}
+
 /* ---------------- 调试辅助 ---------------- */
 
 function resetMockData() {
@@ -978,5 +1447,12 @@ export default {
 	followup_list,
 	followup_mark,
 	followup_debug,
+	get_appointment_board,
+	get_appointment_detail,
+	get_appointment_by_member,
+	save_appointment,
+	set_appointment_status,
+	appointment_to_order,
+	set_technician,
 	resetMockData
 }

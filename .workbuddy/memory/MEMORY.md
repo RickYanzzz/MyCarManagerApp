@@ -29,6 +29,17 @@
   - 百度该接口有**每日调用额度**，用尽时返回 `error_code 17`（已映射为中文提示）
   - 已删除废弃云函数 `get_image_ocr_token`（无引用 + 会向调用方返回裸 token，有安全风险）；备份在 `/tmp/get_image_ocr_token_backup_20261013`
 
+## 预约排班（2026-11-01 新增）
+- 集合 `appointment` + 云函数 `appointment_api`（action：board / detail / byMember / save / status / toOrder / setTechnician）
+- 师傅 = user 表 `canBeTechnician: true`；时段 60 分钟、08:00–19:00、起约对齐 30 分钟
+- 状态 0 待到店 1 施工中 2 已完成 3 已取消 4 未到店，**只有 0/1 占用时段**
+- 页面 `pages/appointment/board|edit|detail`；客户详情页有「预约记录」反查
+- 时间一律按北京时间显式换算（云函数容器是 UTC，用 getHours 会差 8 小时）
+- 营业时间/档位/工位数改 `app_config` 集合 `appointment_config`，不用重新部署
+- **跨天预约**：按「时间区间与当天有交集」归日，最长 24 小时；次日看板块带「续」角标，`summarize` 按当天营业区间裁剪占用分钟
+- **工位容量**：`bayCount`（默认 3，0=不约束）与师傅冲突分开校验；`bayNo` 自动补空位，满员返回 409 + `bayFull`
+- 测试：`tests/appointment-schedule.test.js`（78）、`tests/appointment-wiring.test.js`（84）
+
 ## 关键业务口径
 - 「今日收入」= status=2（已入账）订单中，`pay_infoList` 里 `type != 4`（4=赠送）的 fee 之和
   - 依赖订单的 `updateTime`（订单完成时间）落在当天区间

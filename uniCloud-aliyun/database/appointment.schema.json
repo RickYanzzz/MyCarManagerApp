@@ -1,0 +1,138 @@
+{
+	"bsonType": "object",
+	"required": ["enterpriseId", "technicianId", "startTime"],
+	"permission": {
+		"read": false,
+		"create": false,
+		"update": false,
+		"delete": false
+	},
+	"properties": {
+		"_id": {
+			"description": "预约ID，系统自动生成"
+		},
+		"enterpriseId": {
+			"title": "企业ID",
+			"bsonType": "string",
+			"foreignKey": "enterprise._id",
+			"description": "预约所属门店"
+		},
+		"technicianId": {
+			"title": "师傅ID",
+			"bsonType": "string",
+			"foreignKey": "user._id",
+			"description": "被预约的师傅，取自员工账号"
+		},
+		"technicianName": {
+			"title": "师傅姓名",
+			"bsonType": "string",
+			"description": "下单时的师傅姓名快照，避免改名后历史预约串号"
+		},
+		"memberId": {
+			"title": "会员ID",
+			"bsonType": "string",
+			"foreignKey": "member._id",
+			"description": "预约客户对应的会员，为空表示散客"
+		},
+		"carInfoId": {
+			"title": "车辆ID",
+			"bsonType": "string",
+			"foreignKey": "car_info._id",
+			"description": "预约车辆，可为空（客户到店后再登记）"
+		},
+		"customerName": {
+			"title": "客户姓名",
+			"bsonType": "string",
+			"description": "客户姓名快照"
+		},
+		"customerPhone": {
+			"title": "客户电话",
+			"bsonType": "string",
+			"description": "客户联系电话快照"
+		},
+		"carNumber": {
+			"title": "车牌号",
+			"bsonType": "string",
+			"description": "车牌快照"
+		},
+		"items": {
+			"title": "预约项目",
+			"bsonType": "array",
+			"arrayType": "object",
+			"description": "预约的服务项目列表",
+			"properties": {
+				"goodsId": {
+					"title": "项目ID",
+					"bsonType": "string",
+					"description": "goods 表ID，自定义项目为空"
+				},
+				"name": {
+					"title": "项目名称",
+					"bsonType": "string"
+				},
+				"fee": {
+					"title": "参考价格",
+					"bsonType": "int",
+					"description": "单位元，仅作参考，实际以开单为准"
+				},
+				"duration": {
+					"title": "预计时长",
+					"bsonType": "int",
+					"description": "单位分钟"
+				}
+			}
+		},
+		"startTime": {
+			"title": "预约开始时间",
+			"bsonType": "timestamp",
+			"description": "毫秒时间戳，已按 30 分钟对齐"
+		},
+		"endTime": {
+			"title": "预约结束时间",
+			"bsonType": "timestamp",
+			"description": "毫秒时间戳，= startTime + duration"
+		},
+		"duration": {
+			"title": "预计总时长",
+			"bsonType": "int",
+			"description": "单位分钟，等于各项目时长之和（可手工调整）"
+		},
+		"bayNo": {
+			"title": "工位号",
+			"bsonType": "int",
+			"description": "占用的工位/举升机编号，从 1 开始；0 表示未分配或未启用工位限制"
+		},
+		"status": {
+			"title": "预约状态",
+			"bsonType": "int",
+			"description": "0 待到店 1 已到店施工中 2 已完成 3 已取消 4 未到店"
+		},
+		"orderId": {
+			"title": "关联工单ID",
+			"bsonType": "string",
+			"description": "一键转开单后写入，为空表示尚未开单"
+		},
+		"remark": {
+			"title": "备注",
+			"bsonType": "string",
+			"description": "客户诉求、接送车等说明"
+		},
+		"createUserId": {
+			"title": "录入人ID",
+			"bsonType": "string",
+			"foreignKey": "user._id"
+		},
+		"createUserName": {
+			"title": "录入人姓名",
+			"bsonType": "string"
+		},
+		"createTime": {
+			"title": "创建时间",
+			"bsonType": "timestamp"
+		},
+		"updateTime": {
+			"title": "更新时间",
+			"bsonType": "timestamp"
+		}
+	}
+}

@@ -191,6 +191,10 @@
 			}
 		},
 		{
+			"path": "pages/work_orders/records",
+			"style": { "navigationBarTitleText": "工单记录", "enablePullDownRefresh": true }
+		},
+		{
 			"path": "pages/analytics/analytics",
 			"style": {
 				"navigationBarTitleText": "经营统计",
@@ -201,6 +205,27 @@
 			"path": "pages/followup/workbench",
 			"style": {
 				"navigationBarTitleText": "AI 回访",
+				"enablePullDownRefresh": false
+			}
+		},
+		{
+			"path": "pages/appointment/board",
+			"style": {
+				"navigationBarTitleText": "预约排班",
+				"enablePullDownRefresh": false
+			}
+		},
+		{
+			"path": "pages/appointment/edit",
+			"style": {
+				"navigationBarTitleText": "预约登记",
+				"enablePullDownRefresh": false
+			}
+		},
+		{
+			"path": "pages/appointment/detail",
+			"style": {
+				"navigationBarTitleText": "预约详情",
 				"enablePullDownRefresh": false
 			}
 		}

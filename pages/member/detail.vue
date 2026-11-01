@@ -73,6 +73,21 @@
 				<view class="member-empty" v-if="!(member.cars || []).length">暂无绑定车辆</view>
 			</view>
 
+			<view class="member-section-title">预约记录</view>
+			<view class="member-car-card">
+				<view class="appt-item" v-for="a in appointments" :key="a._id" @click="goAppointment(a)">
+					<view class="appt-left">
+						<text class="appt-time">{{ a.dateShort }} {{ a.timeRangeText }}</text>
+						<text class="appt-items">{{ a.itemsText }}</text>
+					</view>
+					<view class="appt-right">
+						<text class="appt-status" :class="'appt-status--' + a.status">{{ a.statusText }}</text>
+						<text class="appt-tech">{{ a.technicianName }}</text>
+					</view>
+				</view>
+				<view class="member-empty" v-if="!appointments.length">暂无预约记录，可在「预约排班」中登记</view>
+			</view>
+
 			<button class="status-btn" v-if="member.status == 1" @click="toggleStatus">停用会员</button>
 			<button class="status-btn enable" v-else @click="toggleStatus">启用会员</button>
 			<view class="member-bottom-space"></view>
@@ -114,6 +129,10 @@
 </template>
 
 <script>
+	import {
+		beijingParts
+	} from '@/common/utils/schedule.js'
+
 	export default {
 		data() {
 			return {
@@ -126,7 +145,8 @@
 					goodsName: '',
 					totalTimes: '',
 					amount: ''
-				}
+				},
+				appointments: []
 			}
 		},
 		onLoad(options) {
@@ -136,6 +156,7 @@
 			if (this.memberId) {
 				this.loadData()
 				this.loadCards()
+				this.loadAppointments()
 			}
 		},
 		methods: {
@@ -188,6 +209,31 @@
 						title: (err && (err.message || err.msg || err.errMsg)) || '开卡失败',
 						icon: 'none'
 					})
+				})
+			},
+			loadAppointments() {
+				this.$api.get_appointment_by_member({
+					memberId: this.memberId,
+					limit: 8
+				}).then(res => {
+					const d = (res && res.data) || {}
+					const list = (d.upcoming || []).concat(d.history || [])
+					this.appointments = list.map(a => Object.assign({}, a, {
+						dateShort: this.shortDate(a.startTime),
+						itemsText: (a.items || []).map(it => it.name).join('、') || '未填项目'
+					}))
+				}).catch(() => {
+					this.appointments = []
+				})
+			},
+			shortDate(ts) {
+				const p = beijingParts(ts)
+				if (!p) return ''
+				return p.month + '/' + p.day
+			},
+			goAppointment(a) {
+				uni.navigateTo({
+					url: '/pages/appointment/detail?id=' + a._id
 				})
 			},
 			loadData() {
@@ -505,6 +551,73 @@
 		margin-left: 8px;
 		font-size: 12px;
 		color: #999999;
+	}
+
+	.appt-item {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		padding: 10px 0;
+		border-bottom: 1px solid #F5F5F5;
+	}
+
+	.appt-item:last-child {
+		border-bottom: none;
+	}
+
+	.appt-left {
+		flex: 1;
+		display: flex;
+		flex-direction: column;
+		overflow: hidden;
+	}
+
+	.appt-time {
+		font-size: 14px;
+		color: #333333;
+	}
+
+	.appt-items {
+		font-size: 12px;
+		color: #999999;
+		margin-top: 3px;
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
+
+	.appt-right {
+		display: flex;
+		flex-direction: column;
+		align-items: flex-end;
+		margin-left: 8px;
+	}
+
+	.appt-status {
+		font-size: 12px;
+		color: #6EA0F7;
+	}
+
+	.appt-status--1 {
+		color: #E0A052;
+	}
+
+	.appt-status--2 {
+		color: #4FAF98;
+	}
+
+	.appt-status--3 {
+		color: #A4ADBD;
+	}
+
+	.appt-status--4 {
+		color: #E58B8B;
+	}
+
+	.appt-tech {
+		font-size: 12px;
+		color: #999999;
+		margin-top: 3px;
 	}
 
 	.car-unbind {

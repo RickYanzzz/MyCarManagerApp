@@ -28,6 +28,15 @@ import {
 	adjust_spare_part_stock,
 	get_spare_part_logs
 } from "./spareParts.js"
+import {
+	get_appointment_board,
+	get_appointment_detail,
+	get_appointment_by_member,
+	save_appointment,
+	set_appointment_status,
+	appointment_to_order,
+	set_technician
+} from "./appointment.js"
 import mockApi from "../mock/api.js"
 import { USE_MOCK } from "../mock/config.js"
 import {
@@ -108,7 +117,14 @@ const realApi = {
 	followup_mark,
 	followup_debug,
 	add_member_card,
-	get_member_cards
+	get_member_cards,
+	get_appointment_board,
+	get_appointment_detail,
+	get_appointment_by_member,
+	save_appointment,
+	set_appointment_status,
+	appointment_to_order,
+	set_technician
 }
 
 // 默认走真实 uniCloud API；本地无云调试时才在 common/mock/config.js 打开 mock。

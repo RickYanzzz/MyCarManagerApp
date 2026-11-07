@@ -4,8 +4,8 @@
  * 改这里，不用改业务代码。两个开关含义：
  *
  * useMock
- *   true  → 用本地模拟数据，完全不访问云函数（默认，最安全）
- *   false → 真实调用云函数，读数据库
+ *   true  → 用本地模拟数据，完全不访问云函数（仅本地调试用，禁止发给线上）
+ *   false → 真实调用云函数，读数据库（线上必须为 false）
  *
  * source
  *   仅当 useMock = false 时生效，决定读哪一组集合：
@@ -19,6 +19,6 @@
  *       ANALYTICS_TRUSTED_AUTH = on，否则云函数会返回 403。
  */
 export default {
-	useMock: true,
-	source: 'test'
+	useMock: false,
+	source: 'real'
 }
